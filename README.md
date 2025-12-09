@@ -58,6 +58,7 @@ El proyecto está compuesto por los siguientes servicios:
 ### Prerequisitos
 - Docker
 - Docker Compose
+- Crear un archivo de variables de entorno ```.env``` tanto en ```/backend``` como en ```/microfrontend```, solo debes copiar el contenido de ```.env.example``` sin ningún cambio a menos que desees otra configuración de puertos dentro del contenedor
 
 ### Iniciar todos los servicios
 ```bash
