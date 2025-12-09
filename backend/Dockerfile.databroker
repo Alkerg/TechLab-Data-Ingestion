@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY ./schemas /app/schemas
+
+COPY data_broker.py .
+COPY utils.py .
+COPY .env .
+
+CMD ["python", "data_broker.py"]

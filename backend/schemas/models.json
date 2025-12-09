@@ -1,0 +1,11 @@
+{
+  "smart_parking": {
+    "id_field": "parking_id"
+  },
+  "cuenta_personas": {
+    "id_field": "camCode"
+  },
+  "lora_wan": {
+    "id_field": "applicationID"
+  }
+}
