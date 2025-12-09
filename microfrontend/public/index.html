@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Microfrontend Orion</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    button { margin: 5px 0; }
+    input { margin: 3px; }
+    pre { background: #eee; padding: 10px; }
+  </style>
+</head>
+<body>
+
+    <h2>Microfrontend Orion</h2>
+
+
+    <h3>Crear nueva entidad</h3>
+
+    <input type="text" id="newEntityId" placeholder="ID (ej: cuenta_personas:A35)">
+    <input type="text" id="newEntityType" placeholder="Tipo (ej: cuenta_personas)">
+
+    <h4>Atributos (JSON)</h4>
+    <textarea id="newEntityAttrs" rows="6" cols="50">
+    {
+    "aforo": {
+        "type": "Number",
+        "value": 0
+    }
+    }
+    </textarea>
+
+    <br><br>
+    <button onclick="createEntity()">Crear Entidad</button>
+
+    <p id="createStatus"></p>
+
+    <h3>Ver entidades disponibles</h3>
+    <button onclick="getEntities()">Ver Entidades</button>
+    <pre id="entities"></pre>
+
+    <h3>Crear suscripción</h3>
+
+    <input id="entityId" placeholder="Entity ID (ej: cuenta_personas:A35)">
+    <input id="entityType" placeholder="Entity Type (ej: cuenta_personas)">
+    <input id="attrs" placeholder="Atributos (ej: aforo,timestamp)">
+    <input id="endpoint" placeholder="Endpoint (http://localhost:9000/notify)">
+    <br>
+    <button onclick="subscribe()">Crear Suscripción</button>
+
+    <pre id="result"></pre>
+    
+    <h3>Entidades y sus endpoints suscritos</h3>
+        <button onclick="getSubscriptions()">Ver Suscripciones</button>
+
+        <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+            <th>Entidad</th>
+            <th>Tipo</th>
+            <th>Endpoint de Notificación</th>
+            </tr>
+        </thead>
+        <tbody id="subscriptions"></tbody>
+        </table>
+
+
+    <h3>Eliminar entidad por ID</h3>
+
+    <input type="text" id="deleteEntityId" placeholder="Ej: cuenta_personas:A35">
+    <button onclick="deleteEntity()">Eliminar entidad</button>
+
+    <p id="deleteStatus"></p>    
+
+
+  <script>
+    async function getEntities() {
+      const r = await fetch("/api/entities");
+      const data = await r.json();
+      document.getElementById("entities").textContent =
+        JSON.stringify(data, null, 2);
+    }
+
+    async function subscribe() {
+      const entityId = document.getElementById("entityId").value;
+      const entityType = document.getElementById("entityType").value;
+      const attrs = document.getElementById("attrs").value.split(",");
+      const endpoint = document.getElementById("endpoint").value;
+
+      const r = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          entityId,
+          entityType,
+          attrs,
+          endpoint
+        })
+      });
+
+      
+      const data = await r.json();
+      document.getElementById("result").textContent =
+        JSON.stringify(data, null, 2);
+    }
+
+    async function getSubscriptions() {
+        const r = await fetch("/api/subscriptions");
+        const data = await r.json();
+
+        const table = document.getElementById("subscriptions");
+        table.innerHTML = "";
+
+        data.forEach(sub => {
+        const row = `
+            <tr>
+            <td>${sub.entityId}</td>
+            <td>${sub.entityType}</td>
+            <td>${sub.endpoint}</td>
+            </tr>
+        `;
+        table.innerHTML += row;
+        });
+  }
+
+    async function deleteEntity() {
+        const id = document.getElementById("deleteEntityId").value;
+
+        if (!id) {
+            alert("Debes ingresar un ID de entidad");
+            return;
+        }
+
+        const r = await fetch(`/api/entities/${id}`, {
+            method: "DELETE"
+        });
+
+        const data = await r.json();
+
+        if (r.ok) {
+            document.getElementById("deleteStatus").textContent =
+            `Entidad eliminada: ${data.entityId}`;
+        } else {
+            document.getElementById("deleteStatus").textContent =
+            `Error: ${data.error}`;
+        }
+    }
+
+    async function createEntity() {
+        const id = document.getElementById("newEntityId").value;
+        const type = document.getElementById("newEntityType").value;
+        const attrsText = document.getElementById("newEntityAttrs").value;
+
+        if (!id || !type) {
+            alert("ID y TYPE son obligatorios");
+            return;
+        }
+
+        let attrs;
+        try {
+            attrs = JSON.parse(attrsText);
+        } catch {
+            alert("El JSON de atributos es inválido");
+            return;
+        }
+
+        const entity = {
+            id,
+            type,
+            ...attrs
+        };
+
+        const r = await fetch("/api/entities", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(entity)
+        });
+
+        const data = await r.json();
+
+        if (r.ok) {
+            document.getElementById("createStatus").textContent =
+            `Entidad creada: ${data.entityId}`;
+        } else {
+            document.getElementById("createStatus").textContent =
+            `Error: ${data.error}`;
+        }
+    }
+
+  </script>
+
+</body>
+</html>

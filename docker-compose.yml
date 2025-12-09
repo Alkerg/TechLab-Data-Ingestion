@@ -1,0 +1,65 @@
+services:
+  orion:
+      image: telefonicaiot/fiware-orion
+      container_name: orion-context-broker
+      ports:
+        - "1026:1026"
+      depends_on:
+        - mongo
+      command: -dbURI mongodb://mongo
+  
+  mongo:
+    image: mongo:8.0
+    container_name: orion-mongo-db
+
+  mqtt-broker:
+    image: eclipse-mosquitto
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mqtt_config:/mosquitto/config
+    restart: unless-stopped
+  
+  data-broker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.databroker
+    container_name: data-broker
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mqtt-broker
+      - orion
+    restart: unless-stopped
+  
+  mqtt-broker-processor:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.mqttbroker
+    container_name: mqtt-broker-processor
+    depends_on:
+      - mqtt-broker
+      - orion
+    restart: unless-stopped
+  
+  mock-notify-receiver:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.mocknotify
+    container_name: mock-notify-receiver
+    ports:
+      - "9000:9000"
+    depends_on:
+      - orion
+    restart: unless-stopped
+
+  microfrontend:
+    build:
+      context: ./microfrontend
+      dockerfile: Dockerfile
+    container_name: microfrontend
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+

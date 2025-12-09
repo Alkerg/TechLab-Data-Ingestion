@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY schemas ./schemas
+COPY mqtt_broker_processor.py .
+COPY utils.py .
+COPY .env .
+
+CMD ["python", "mqtt_broker_processor.py"]
