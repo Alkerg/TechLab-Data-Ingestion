@@ -11,6 +11,8 @@ services:
   mongo:
     image: mongo:8.0
     container_name: orion-mongo-db
+    volumes:
+      - mongo_data:/data/db
 
   mqtt-broker:
     image: eclipse-mosquitto
@@ -63,3 +65,5 @@ services:
       - "3000:3000"
     restart: unless-stopped
 
+volumes:
+  mongo_data:
