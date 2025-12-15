@@ -1,12 +1,12 @@
 services:
   orion:
-      image: telefonicaiot/fiware-orion
-      container_name: orion-context-broker
-      ports:
-        - "1026:1026"
-      depends_on:
-        - mongo
-      command: -dbURI mongodb://mongo
+    image: telefonicaiot/fiware-orion
+    container_name: orion-context-broker
+    ports:
+      - "1026:1026"
+    depends_on:
+      - mongo
+    command: -dbURI mongodb://mongo
   
   mongo:
     image: mongo:8.0
@@ -26,9 +26,7 @@ services:
     restart: unless-stopped
   
   data-broker:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.databroker
+    image: alk3rg/techlab-databroker:latest
     container_name: data-broker
     ports:
       - "8000:8000"
@@ -38,9 +36,7 @@ services:
     restart: unless-stopped
   
   mqtt-broker-processor:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.mqttbroker
+    image: alk3rg/techlab-mqttbroker:latest
     container_name: mqtt-broker-processor
     depends_on:
       - mqtt-broker
@@ -48,9 +44,7 @@ services:
     restart: unless-stopped
   
   mock-notify-receiver:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.mocknotify
+    image: alk3rg/techlab-mocknotify:latest
     container_name: mock-notify-receiver
     ports:
       - "9000:9000"
@@ -59,9 +53,7 @@ services:
     restart: unless-stopped
 
   microfrontend:
-    build:
-      context: ./microfrontend
-      dockerfile: Dockerfile
+    image: alk3rg/techlab-microfrontend:latest
     container_name: microfrontend
     ports:
       - "3000:3000"

@@ -96,7 +96,7 @@ docker-compose down
 ### Opción 1: Acceder al servicio de interfaz propio
  Para eso basta con acceder a ```http://localhost:3000``` y rellenar el formulario
 
-![logs de docker para smart_parking:A2 creado desde interfaz](imgs/crear_entidad_interfaz.png)
+![logs de docker para smart_parking:A2 creado desde interfaz](imgs/crear_entidad_interfaz1.png)
 
 
 ![logs de docker para smart_parking:A2 creado desde interfaz](imgs/mock_notify_receiver_logs5.png)
@@ -171,7 +171,7 @@ curl -iX POST 'http://localhost:1026/v2/entities' \
 ### Opción 1: Acceder al servicio de interfaz propio
  Para eso basta con acceder a ```http://localhost:3000``` y rellenar el formulario
 
-![suscribir a entidad](imgs/suscribir_a_entidad.png)
+![suscribir a entidad](imgs/crear_suscripcion1.png)
 
 > **Nota 1:** Si el script de prueba se va a ejecutar en tu máquina local (no dentro del contenedor), la URL de suscripción (endpoint) deber escribirse de la siguiente manera ```http://host.docker.internal:<PORT>``` ya que al usar ```localhost```, docker entenderá que te refieres al mismo contenedor y no recibirás las notificaciones.
 

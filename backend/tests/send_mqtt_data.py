@@ -27,7 +27,7 @@ def random_smart_parking_mqtt_data():
 
 def random_cuenta_personas_mqtt_data():
 
-    id_number = random.randint(1, 3)
+    id_number = random.randint(1, 2)
     cam_code = f"CAM{id_number}"
     aforo = random.randint(0, 20)
 
@@ -41,7 +41,7 @@ def random_cuenta_personas_mqtt_data():
 def random_lora_mqtt_data():
     return {
         "adr": True,
-        "applicationID": str(random.randint(1, 3)),
+        "applicationID": str(random.randint(1, 2)),
         "applicationName": "mqtt", 
         "data": "SGVsbG8gUkFLV2lyZWxlc3M=", 
         "data_encode": "base64", 
@@ -54,9 +54,9 @@ def random_lora_mqtt_data():
             "gatewayID": "ac1f09fffe0fd50c", 
             "loRaSNR": 9.2, 
             "location": { 
-                "altitude": 0,
-                "latitude": 0,
-                "longitude": 0
+                "altitude": random.randint(0, 100),
+                "latitude": random.uniform(-90, 90),
+                "longitude": random.uniform(-180, 180)
             },
             "rssi": -36 
             }
@@ -66,7 +66,7 @@ def random_lora_mqtt_data():
         
         "txInfo": {
             "dr": 0, 
-            "frequency": 868100000 
+            "frequency": random.randint(860000000, 1020000000) 
         }
     }
 
@@ -84,11 +84,11 @@ if __name__ == "__main__":
             #client.publish(TOPIC, json.dumps(smart_parking_data))
             #print("Published to MQTT Broker:", smart_parking_data)
 
-            client.publish(TOPIC, json.dumps(cuenta_personas_data))
-            print("Published to MQTT Broker:", cuenta_personas_data)
+            #client.publish(TOPIC, json.dumps(cuenta_personas_data))
+            #print("Published to MQTT Broker:", cuenta_personas_data)
 
-            #client.publish(TOPIC, json.dumps(lora_data))
-            #print("Published to MQTT Broker:", lora_data)
+            client.publish(TOPIC, json.dumps(lora_data))
+            print("Published to MQTT Broker:", lora_data)
             
             time.sleep(2)
 
