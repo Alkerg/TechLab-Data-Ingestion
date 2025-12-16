@@ -5,7 +5,9 @@ import random
 from datetime import datetime, timezone
 
 HTTP_BROKER_URL_CUENTA_PERSONAS = "http://localhost:8000/ingest/cuenta_personas"
+HTTP_BROKER_URL_CUENTA_PERSONAS = "https://oti-test.jorgeparishuana.dev:4200/ingest/cuenta_personas"
 HTTP_BROKER_URL_SMART_PARKING = "http://localhost:8000/ingest/smart_parking"
+HTTP_BROKER_URL_SMART_PARKING = "https://oti-test.jorgeparishuana.dev:4200/ingest/smart_parking"
 
 def random_smart_parking_http_data():
 

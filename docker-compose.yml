@@ -7,12 +7,16 @@ services:
       depends_on:
         - mongo
       command: -dbURI mongodb://mongo
+      networks:
+      - testnet
   
   mongo:
     image: mongo:8.0
     container_name: orion-mongo-db
     volumes:
       - mongo_data:/data/db
+    networks:
+      - testnet
 
   mqtt-broker:
     image: eclipse-mosquitto
@@ -24,6 +28,8 @@ services:
              echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf &&
              /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
     restart: unless-stopped
+    networks:
+      - testnet
   
   data-broker:
     build:
@@ -36,8 +42,12 @@ services:
       - mqtt-broker
       - orion
     restart: unless-stopped
+    networks:
+      - testnet
   
   mqtt-broker-processor:
+    tty: true
+    stdin_open: true
     build:
       context: ./backend
       dockerfile: Dockerfile.mqttbroker
@@ -46,6 +56,8 @@ services:
       - mqtt-broker
       - data-broker
     restart: unless-stopped
+    networks:
+      - testnet
   
   mock-notify-receiver:
     build:
@@ -57,6 +69,8 @@ services:
     depends_on:
       - orion
     restart: unless-stopped
+    networks:
+      - testnet
 
   microfrontend:
     build:
@@ -66,6 +80,12 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
+    networks:
+      - testnet
 
 volumes:
   mongo_data:
+
+networks:
+  testnet:
+    external: true

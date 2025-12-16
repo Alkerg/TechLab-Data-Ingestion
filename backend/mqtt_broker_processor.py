@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 MQTT_BROKER_HOST = os.getenv("MQTT_BROKER_HOST", "localhost")
+MQTT_TLS_BOOL = os.getenv("MQTT_TLS_BOOL", False)
 MQTT_BROKER_PORT = int(os.getenv("MQTT_BROKER_PORT", "1883"))
 DATA_BROKER_URL = os.getenv("DATA_BROKER_URL", "http://data-broker:8000")
 
@@ -99,6 +100,10 @@ def on_message(client, userdata, msg):
 if __name__ == "__main__":
     client = mqtt.Client()
     client.on_message = on_message
+
+    client.tls_set()
+    client.tls_insecure_set(True)        
+
     client.connect(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
 
     for topic in TOPIC_MODEL_MAP:
