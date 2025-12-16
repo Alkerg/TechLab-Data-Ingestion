@@ -3,11 +3,18 @@ import time
 import json
 import random
 import paho.mqtt.client as mqtt
+import base64
 from datetime import datetime, timezone
 
 MQTT_HOST = "localhost"
+MQTT_HOST = "oti-test.jorgeparishuana.dev"
 MQTT_PORT = 1883
-TOPIC = "lorawan/data"
+TOPIC = "cuenta_personas/data"
+
+def encode_base64_payload(payload_dict):
+    json_str = json.dumps(payload_dict)
+    b64 = base64.b64encode(json_str.encode()).decode()
+    return {"data": b64}
 
 def random_smart_parking_mqtt_data():
 
@@ -72,6 +79,7 @@ def random_lora_mqtt_data():
 
 if __name__ == "__main__":
     client = mqtt.Client()
+    client.tls_set()
     client.connect(MQTT_HOST, MQTT_PORT)
     client.loop_start()
 
@@ -84,7 +92,8 @@ if __name__ == "__main__":
             #client.publish(TOPIC, json.dumps(smart_parking_data))
             #print("Published to MQTT Broker:", smart_parking_data)
 
-            client.publish(TOPIC, json.dumps(cuenta_personas_data))
+            wrapped = encode_base64_payload(cuenta_personas_data) 
+            client.publish(TOPIC, json.dumps(wrapped))
             print("Published to MQTT Broker:", cuenta_personas_data)
 
             #client.publish(TOPIC, json.dumps(lora_data))

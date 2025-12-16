@@ -10,6 +10,7 @@ load_dotenv()
 
 ORION_URL = os.getenv("ORION_URL", "http://localhost:1026/v2/entities")
 MQTT_BROKER_HOST = os.getenv("MQTT_BROKER_HOST", "localhost")
+MQTT_TLS_BOOL = os.getenv("MQTT_TLS_BOOL", False)
 MQTT_BROKER_PORT = int(os.getenv("MQTT_BROKER_PORT", "1883"))
 
 with open("./schemas/models.json") as f:
@@ -52,11 +53,15 @@ def on_message(client, userdata, msg):
 
         if r.status_code == 201:
             print("Entidad creada:", entity["id"])
+           
 
         elif r.status_code == 422:
-            requests.patch(
+            attributes = entity.copy()
+            attributes.pop("id", None)
+            attributes.pop("type", None)
+            r2 = requests.patch(
                 f"{ORION_URL}/{entity['id']}/attrs",
-                json=entity
+                json=attributes
             )
             print("Entidad actualizada:", entity["id"])
 
@@ -70,6 +75,9 @@ def on_message(client, userdata, msg):
 if __name__ == "__main__":
     client = mqtt.Client()
     client.on_message = on_message
+
+    client.tls_set()
+    client.tls_insecure_set(True)        
 
     client.connect(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
 
