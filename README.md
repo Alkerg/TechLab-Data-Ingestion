@@ -53,7 +53,39 @@ El proyecto está compuesto por los siguientes servicios:
 #### **MongoDB** (`mongo`)
 - Base de datos para persistencia de Orion
 
-## Cómo levantar los servicios
+## Cómo levantar los servicios con imágenes de Docker Hub
+Las imágenes de los servicios se encuentran alojadas en el siguiente [enlace](https://hub.docker.com/repositories/alk3rg)
+
+Para levantar los servicios sin construir las imágenes localmente, usa el archivo ```docker-compose-deploy.yml```
+
+### Inicia todos los servicios
+
+```bash
+# Actualiza las imágenes de Docker Hub por si hubo algún cambio
+docker-compose -f docker-compose-deploy.yml pull
+
+# Inicia los servicios con las imágenes de Docker Hub
+docker-compose -f docker-compose-deploy.yml up -d
+```
+
+## Cómo construir imágenes y subirlas al repositorio
+
+Para construir las imágenes de cada servicio de forma automática puedes utilizar el script ```build_images.sh``` o copiar los comandos de construcción *docker build* de cada servicio y ejecutarlos en tu terminal.
+
+Luego, para subir las imágenes usa el script ```upload_images.sh```. Si deseas usar tu cuenta de **Docker Hub** puedes cambiar la variable **DOCKER_USERNAME** del script ```upload_images.sh``` por tu *username* de Docker Hub.
+
+```bash
+# Construir imágenes
+bash build_images.sh
+
+# Subir imágenes a Docker Hub
+bash upload_images.sh
+```
+
+> **Nota:** Debes iniciar sesión en docker desde la terminal para subir imágenes a Docker Hub. Usa el comando ```docker login``` y luego, ejecuta el script ```upload_images.sh```
+
+
+## Cómo levantar los servicios localmente
 
 ### Prerequisitos
 - Docker
@@ -64,9 +96,11 @@ El proyecto está compuesto por los siguientes servicios:
 ```bash
 # Forma estándar desacoplada (sin imprimir los logs en la consola)
 docker-compose up -d
+# o
+docker-compose -f docker-compose.yml up -d
 
 # Si deseas reconstruir todo el proyecto y servicios desde cero
-docker compose up --build --force-recreate --no-deps
+docker-compose -f docker-compose.yml up --build --force-recreate --no-deps
 ```
 Deberias ver algo como esto si usas Docker Desktop
 

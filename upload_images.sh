@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+# Nombre de usuario del Docker Hub (se puede sustituir)
 DOCKER_USERNAME="alk3rg" 
 
 # Lista de imágenes
