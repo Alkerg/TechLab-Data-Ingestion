@@ -11,7 +11,7 @@ HTTP_BROKER_URL_SMART_PARKING = "https://oti-test.jorgeparishuana.dev:4200/inges
 
 def random_smart_parking_http_data():
 
-    id_number = random.randint(1, 4)
+    id_number = random.randint(1, 2)
     state = ""
     for i in range(6):
         state += random.choice(["0", "1"])
@@ -51,7 +51,7 @@ def random_smart_parking_http_data():
 
 def random_cuenta_personas_http_data():
 
-    id_number = random.randint(1, 4)
+    id_number = random.randint(1, 2)
     cam_code = f"A{id_number}"
     aforo = random.randint(0, 20)
 
@@ -65,11 +65,13 @@ def random_cuenta_personas_http_data():
 if __name__ == "__main__":
     try:
         while True:
-            #requests.post(HTTP_BROKER_URL_SMART_PARKING, json=random_smart_parking_http_data())
-            #print("Sent smart parking data via HTTP")
+            smart_parking_data = random_smart_parking_http_data()
+            requests.post(HTTP_BROKER_URL_SMART_PARKING, json=smart_parking_data)
+            print("\nSmart Parking data sent via HTTP:", smart_parking_data)
 
-            r = requests.post(HTTP_BROKER_URL_CUENTA_PERSONAS, json=random_cuenta_personas_http_data())
-            print("Sent cuenta personas data via HTTP",r.status_code, r.text)
+            cuenta_personas_data = random_cuenta_personas_http_data()
+            requests.post(HTTP_BROKER_URL_CUENTA_PERSONAS, json=cuenta_personas_data)
+            print("\nCuenta Personas data sent via HTTP:", cuenta_personas_data)
 
             time.sleep(2)
     except KeyboardInterrupt:

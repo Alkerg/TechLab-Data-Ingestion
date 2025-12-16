@@ -2,192 +2,87 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Microfrontend Orion</title>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    button { margin: 5px 0; }
-    input { margin: 3px; }
-    pre { background: #eee; padding: 10px; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechLab IoT - Orion Manager</title>
+  
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h2>Microfrontend Orion</h2>
-
+  <div class="container">
+    <h2>Microfrontend TechLab</h2>
 
     <h3>Crear nueva entidad</h3>
+    <div class="form-group">
+      <label>ID de la entidad:</label>
+      <input type="text" id="newEntityId" placeholder="Ej: cuenta_personas:A35">
+      
+      <label>Tipo de entidad:</label>
+      <input type="text" id="newEntityType" placeholder="Ej: cuenta_personas">
 
-    <input type="text" id="newEntityId" placeholder="ID (ej: cuenta_personas:A35)">
-    <input type="text" id="newEntityType" placeholder="Tipo (ej: cuenta_personas)">
-
-    <h4>Atributos (JSON)</h4>
-    <textarea id="newEntityAttrs" rows="6" cols="50">
-    {
+      <label>Atributos (JSON):</label>
+      <textarea id="newEntityAttrs" rows="6" placeholder='{ "aforo": { "type": "Number", "value": 0 } }'>{
     "aforo": {
         "type": "Number",
         "value": 0
     }
-    }
-    </textarea>
+}</textarea>
+      <button onclick="createEntity()">Crear Entidad</button>
+      <p id="createStatus" class="status-msg"></p>
+    </div>
 
-    <br><br>
-    <button onclick="createEntity()">Crear Entidad</button>
-
-    <p id="createStatus"></p>
-
-    <h3>Ver entidades disponibles</h3>
-    <button onclick="getEntities()">Ver Entidades</button>
-    <pre id="entities"></pre>
+    <h3>Entidades disponibles</h3>
+    <div class="form-group">
+      <button onclick="getEntities()">Consultar Entidades</button>
+      <pre id="entities">Sin datos cargados...</pre>
+    </div>
 
     <h3>Crear suscripción</h3>
-
-    <input id="entityId" placeholder="Entity ID (ej: cuenta_personas:A35)">
-    <input id="entityType" placeholder="Entity Type (ej: cuenta_personas)">
-    <input id="attrs" placeholder="Atributos (ej: aforo,timestamp)">
-    <input id="endpoint" placeholder="Endpoint (http://localhost:9000/notify)">
-    <br>
-    <button onclick="subscribe()">Crear Suscripción</button>
-
-    <pre id="result"></pre>
-    
-    <h3>Entidades y sus endpoints suscritos</h3>
-        <button onclick="getSubscriptions()">Ver Suscripciones</button>
-
-        <table border="1" cellpadding="6">
-        <thead>
-            <tr>
-            <th>Entidad</th>
-            <th>Tipo</th>
-            <th>Endpoint de Notificación</th>
-            </tr>
-        </thead>
-        <tbody id="subscriptions"></tbody>
-        </table>
-
-
-    <h3>Eliminar entidad por ID</h3>
-
-    <input type="text" id="deleteEntityId" placeholder="Ej: cuenta_personas:A35">
-    <button onclick="deleteEntity()">Eliminar entidad</button>
-
-    <p id="deleteStatus"></p>    
-
-
-  <script>
-    async function getEntities() {
-      const r = await fetch("/api/entities");
-      const data = await r.json();
-      document.getElementById("entities").textContent =
-        JSON.stringify(data, null, 2);
-    }
-
-    async function subscribe() {
-      const entityId = document.getElementById("entityId").value;
-      const entityType = document.getElementById("entityType").value;
-      const attrs = document.getElementById("attrs").value.split(",");
-      const endpoint = document.getElementById("endpoint").value;
-
-      const r = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          entityId,
-          entityType,
-          attrs,
-          endpoint
-        })
-      });
-
+    <div class="form-group">
+      <label>ID de la Entidad:</label>
+      <input type="text" id="entityId" placeholder="Ej: cuenta_personas:A35">
       
-      const data = await r.json();
-      document.getElementById("result").textContent =
-        JSON.stringify(data, null, 2);
-    }
-
-    async function getSubscriptions() {
-        const r = await fetch("/api/subscriptions");
-        const data = await r.json();
-
-        const table = document.getElementById("subscriptions");
-        table.innerHTML = "";
-
-        data.forEach(sub => {
-        const row = `
+      <label>Tipo de Entidad:</label>
+      <input type="text" id="entityType" placeholder="Ej: cuenta_personas">
+      
+      <label>Atributos a monitorear (separados por coma):</label>
+      <input type="text" id="attrs" placeholder="Ej: aforo,timestamp">
+      
+      <label>Endpoint de notificación:</label>
+      <input type="text" id="endpoint" placeholder="Ej: http://mock-notify-receiver:9000/notify">
+      
+      <button onclick="subscribe()">Crear Suscripción</button>
+      <pre id="result">Esperando respuesta...</pre>
+    </div>
+    
+    <h3>Suscripciones activas</h3>
+    <div class="form-group">
+      <button onclick="getSubscriptions()">Actualizar Lista</button>
+      <div style="overflow-x: auto;">
+        <table border="0">
+          <thead>
             <tr>
-            <td>${sub.entityId}</td>
-            <td>${sub.entityType}</td>
-            <td>${sub.endpoint}</td>
+              <th>Entidad</th>
+              <th>Tipo</th>
+              <th>Endpoint</th>
             </tr>
-        `;
-        table.innerHTML += row;
-        });
-  }
+          </thead>
+          <tbody id="subscriptions"></tbody>
+        </table>
+      </div>
+    </div>
 
-    async function deleteEntity() {
-        const id = document.getElementById("deleteEntityId").value;
+    <h3>Eliminación de entidades</h3>
+    <div class="form-group" style="border-left: 4px solid #e74c3c;">
+      <label>Eliminar Entidad por ID:</label>
+      <input type="text" id="deleteEntityId" placeholder="Ej: cuenta_personas:A35">
+      <button onclick="deleteEntity()" class="delete-btn">Eliminar Entidad</button>
+      <p id="deleteStatus" class="status-msg" style="color: #e74c3c;"></p>
+    </div>
 
-        if (!id) {
-            alert("Debes ingresar un ID de entidad");
-            return;
-        }
+  </div>
 
-        const r = await fetch(`/api/entities/${id}`, {
-            method: "DELETE"
-        });
-
-        const data = await r.json();
-
-        if (r.ok) {
-            document.getElementById("deleteStatus").textContent =
-            `Entidad eliminada: ${data.entityId}`;
-        } else {
-            document.getElementById("deleteStatus").textContent =
-            `Error: ${data.error}`;
-        }
-    }
-
-    async function createEntity() {
-        const id = document.getElementById("newEntityId").value;
-        const type = document.getElementById("newEntityType").value;
-        const attrsText = document.getElementById("newEntityAttrs").value;
-
-        if (!id || !type) {
-            alert("ID y TYPE son obligatorios");
-            return;
-        }
-
-        let attrs;
-        try {
-            attrs = JSON.parse(attrsText);
-        } catch {
-            alert("El JSON de atributos es inválido");
-            return;
-        }
-
-        const entity = {
-            id,
-            type,
-            ...attrs
-        };
-
-        const r = await fetch("/api/entities", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(entity)
-        });
-
-        const data = await r.json();
-
-        if (r.ok) {
-            document.getElementById("createStatus").textContent =
-            `Entidad creada: ${data.entityId}`;
-        } else {
-            document.getElementById("createStatus").textContent =
-            `Error: ${data.error}`;
-        }
-    }
-
-  </script>
+  <script src="script.js"></script>
 
 </body>
 </html>

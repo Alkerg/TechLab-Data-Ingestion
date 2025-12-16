@@ -1,15 +1,15 @@
 services:
   orion:
-      image: telefonicaiot/fiware-orion
-      container_name: orion-context-broker
-      ports:
-        - "1026:1026"
-      depends_on:
-        - mongo
-      command: -dbURI mongodb://mongo
-      networks:
+    image: telefonicaiot/fiware-orion
+    container_name: orion-context-broker
+    ports:
+      - "1026:1026"
+    depends_on:
+      - mongo
+    command: -dbURI mongodb://mongo
+    networks:
       - testnet
-  
+
   mongo:
     image: mongo:8.0
     container_name: orion-mongo-db
@@ -23,18 +23,16 @@ services:
     container_name: mqtt-broker
     ports:
       - "1883:1883"
-    command: >
-      sh -c "echo 'listener 1883' > /mosquitto/config/mosquitto.conf &&
-             echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf &&
-             /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
+    volumes:
+      - ./mqtt_config:/mosquitto/config
+      - /opt/mosquitto-certs/fullchain.pem:/mosquitto/certs/fullchain.pem:ro
+      - /opt/mosquitto-certs/privkey.pem:/mosquitto/certs/privkey.pem:ro
     restart: unless-stopped
     networks:
-      - testnet
-  
+      - testnet  
+
   data-broker:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.databroker
+    image: alk3rg/techlab-databroker:latest
     container_name: data-broker
     ports:
       - "8000:8000"
@@ -44,13 +42,9 @@ services:
     restart: unless-stopped
     networks:
       - testnet
-  
+
   mqtt-broker-processor:
-    tty: true
-    stdin_open: true
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.mqttbroker
+    image: alk3rg/techlab-mqttbroker:latest
     container_name: mqtt-broker-processor
     depends_on:
       - mqtt-broker
@@ -60,9 +54,7 @@ services:
       - testnet
   
   mock-notify-receiver:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.mocknotify
+    image: alk3rg/techlab-mocknotify:latest
     container_name: mock-notify-receiver
     ports:
       - "9000:9000"
@@ -71,11 +63,9 @@ services:
     restart: unless-stopped
     networks:
       - testnet
-
+      
   microfrontend:
-    build:
-      context: ./microfrontend
-      dockerfile: Dockerfile
+    image: alk3rg/techlab-microfrontend:latest
     container_name: microfrontend
     ports:
       - "3000:3000"
