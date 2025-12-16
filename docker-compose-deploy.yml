@@ -40,7 +40,7 @@ services:
     container_name: mqtt-broker-processor
     depends_on:
       - mqtt-broker
-      - orion
+      - data-broker
     restart: unless-stopped
   
   mock-notify-receiver:

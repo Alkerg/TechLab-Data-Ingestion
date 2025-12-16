@@ -3,20 +3,21 @@ import base64
 import os
 import paho.mqtt.client as mqtt
 import requests
-from utils import json_to_ngsi_entity
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
 
-ORION_URL = os.getenv("ORION_URL", "http://localhost:1026/v2/entities")
 MQTT_BROKER_HOST = os.getenv("MQTT_BROKER_HOST", "localhost")
 MQTT_BROKER_PORT = int(os.getenv("MQTT_BROKER_PORT", "1883"))
+DATA_BROKER_URL = os.getenv("DATA_BROKER_URL", "http://data-broker:8000")
 
+MODELS_FILE = "./schemas/models.json"
 try:
-    with open("./schemas/models.json") as f:
+    with open(MODELS_FILE, 'r') as f:
         MODELS = json.load(f)
-except FileNotFoundError:
-    print("Error: No se encontró backend/schemas/models.json")
+except Exception as e:
+    print(f"Error cargando modelos: {e}")
     MODELS = {}
 
 TOPIC_MODEL_MAP = {}
@@ -24,31 +25,47 @@ for model_name, config in MODELS.items():
     if "mqtt_topic" in config:
         TOPIC_MODEL_MAP[config["mqtt_topic"]] = model_name
 
-print(f"Modelos cargados: {list(MODELS.keys())}")
-print(f"Tópicos suscritos: {TOPIC_MODEL_MAP}")
+def get_value_from_path(data, path):
+    keys = re.split(r'\.|\[(\d+)\]', path)
+    keys = [k for k in keys if k and k != '']
+    current = data
+    try:
+        for key in keys:
+            if isinstance(current, list):
+                key = int(key)
+                current = current[key]
+            else:
+                current = current[key]
+        return current
+    except Exception:
+        return None
+
+def apply_mappings(payload, mappings):
+    for attr_name, path in mappings.items():
+        val = get_value_from_path(payload, path)
+        if val is not None:
+            payload[attr_name] = val
+    return payload
 
 def on_message(client, userdata, msg):
     try:
         raw = json.loads(msg.payload.decode())
         topic = msg.topic
-        print(f"Mensaje recibido en: {topic}")
 
         if topic not in TOPIC_MODEL_MAP:
-            print("Tópico no registrado en models.json")
             return
 
         entity_type = TOPIC_MODEL_MAP[topic]
-        id_field = MODELS[entity_type]["id_field"]
-
+        
+        model_config = MODELS.get(entity_type, {})
+        
         payload = raw.copy()
 
         if "data" in raw:
             is_base64 = raw.get("data_encode") == "base64" or entity_type == "lora_wan"
-            
             if is_base64:
                 try:
-                    decoded_bytes = base64.b64decode(raw["data"])
-                    decoded_str = decoded_bytes.decode('utf-8')
+                    decoded_str = base64.b64decode(raw["data"]).decode('utf-8')
                     try:
                         decoded_json = json.loads(decoded_str)
                         if isinstance(decoded_json, dict):
@@ -59,29 +76,25 @@ def on_message(client, userdata, msg):
                     except json.JSONDecodeError:
                         payload["data"] = decoded_str
                 except Exception:
-                    pass 
+                    pass
 
+        if "mappings" in model_config:
+            payload = apply_mappings(payload, model_config["mappings"])
+
+        ingest_url = f"{DATA_BROKER_URL}/ingest/{entity_type}"
+        
         try:
-            entity = json_to_ngsi_entity(payload, entity_type, id_field)
-        except Exception as e:
-            print(f"Error creando entidad ({entity_type}): {e}")
-            return
-        
-        
-        r = requests.post(ORION_URL, json=entity)
-        if r.status_code == 201:
-            print(f"Entidad creada: {entity['id']}")
-        elif r.status_code == 422:
-            attrs_only = entity.copy()
-            attrs_only.pop("id", None)
-            attrs_only.pop("type", None)
-            requests.patch(f"{ORION_URL}/{entity['id']}/attrs", json=attrs_only)
-            print(f"Entidad actualizada: {entity['id']}")
-        else:
-            print(f"Error Orion: {r.text}")
+            r = requests.post(ingest_url, json=payload)
+            if r.status_code in [200, 201]:
+                print(f"[{entity_type}] Procesado exitosamente por Data Broker.")
+            else:
+                print(f"[{entity_type}] Error en Data Broker ({r.status_code}): {r.text}")
+                
+        except requests.exceptions.RequestException as e:
+            print(f"Error conectando con Data Broker: {e}")
 
     except Exception as e:
-        print(f"Error general: {e}")
+        print(f"Error procesando mensaje MQTT: {e}")
 
 if __name__ == "__main__":
     client = mqtt.Client()
@@ -90,6 +103,6 @@ if __name__ == "__main__":
 
     for topic in TOPIC_MODEL_MAP:
         client.subscribe(topic)
+        print(f"Suscrito a: {topic}")
 
-    print("Servidor MQTT escuchando...")
     client.loop_forever()
