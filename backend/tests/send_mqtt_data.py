@@ -90,18 +90,18 @@ if __name__ == "__main__":
             lora_data = random_lora_mqtt_data()
 
             #client.publish(TOPIC, json.dumps(smart_parking_data))
-            #print("Published to MQTT Broker:", smart_parking_data)
+            #print("Publicado a MQTT Broker:", smart_parking_data)
 
             wrapped = encode_base64_payload(cuenta_personas_data) 
             #Eclient.publish(TOPIC, json.dumps(wrapped))
-            #print("Published to MQTT Broker:", cuenta_personas_data)
+            #print("Publicado a MQTT Broker:", cuenta_personas_data)
 
             client.publish(TOPIC, json.dumps(lora_data))
-            print("Published to MQTT Broker:", lora_data)
+            print("Publicado a MQTT Broker:", lora_data)
             
             time.sleep(2)
 
     except KeyboardInterrupt:
-        print("\nNo more data sent")
+        print("\nFin de la prueba MQTT")
         client.loop_stop()
         client.disconnect()
