@@ -3,11 +3,18 @@ import time
 import json
 import random
 import paho.mqtt.client as mqtt
+import base64
 from datetime import datetime, timezone
 
 MQTT_HOST = "localhost"
+MQTT_HOST = "oti-test.jorgeparishuana.dev"
 MQTT_PORT = 1883
-TOPIC = "lorawan/data"
+TOPIC = "cuenta_personas/data"
+
+def encode_base64_payload(payload_dict):
+    json_str = json.dumps(payload_dict)
+    b64 = base64.b64encode(json_str.encode()).decode()
+    return {"data": b64}
 
 def random_smart_parking_mqtt_data():
 
@@ -27,7 +34,7 @@ def random_smart_parking_mqtt_data():
 
 def random_cuenta_personas_mqtt_data():
 
-    id_number = random.randint(1, 3)
+    id_number = random.randint(1, 2)
     cam_code = f"CAM{id_number}"
     aforo = random.randint(0, 20)
 
@@ -41,7 +48,7 @@ def random_cuenta_personas_mqtt_data():
 def random_lora_mqtt_data():
     return {
         "adr": True,
-        "applicationID": str(random.randint(1, 3)),
+        "applicationID": str(random.randint(1, 2)),
         "applicationName": "mqtt", 
         "data": "SGVsbG8gUkFLV2lyZWxlc3M=", 
         "data_encode": "base64", 
@@ -54,9 +61,9 @@ def random_lora_mqtt_data():
             "gatewayID": "ac1f09fffe0fd50c", 
             "loRaSNR": 9.2, 
             "location": { 
-                "altitude": 0,
-                "latitude": 0,
-                "longitude": 0
+                "altitude": random.randint(0, 100),
+                "latitude": random.uniform(-90, 90),
+                "longitude": random.uniform(-180, 180)
             },
             "rssi": -36 
             }
@@ -66,12 +73,13 @@ def random_lora_mqtt_data():
         
         "txInfo": {
             "dr": 0, 
-            "frequency": 868100000 
+            "frequency": random.randint(860000000, 1020000000) 
         }
     }
 
 if __name__ == "__main__":
     client = mqtt.Client()
+    client.tls_set()
     client.connect(MQTT_HOST, MQTT_PORT)
     client.loop_start()
 
@@ -82,17 +90,18 @@ if __name__ == "__main__":
             lora_data = random_lora_mqtt_data()
 
             #client.publish(TOPIC, json.dumps(smart_parking_data))
-            #print("Published to MQTT Broker:", smart_parking_data)
+            #print("Publicado a MQTT Broker:", smart_parking_data)
 
-            client.publish(TOPIC, json.dumps(cuenta_personas_data))
-            print("Published to MQTT Broker:", cuenta_personas_data)
+            wrapped = encode_base64_payload(cuenta_personas_data) 
+            #Eclient.publish(TOPIC, json.dumps(wrapped))
+            #print("Publicado a MQTT Broker:", cuenta_personas_data)
 
-            #client.publish(TOPIC, json.dumps(lora_data))
-            #print("Published to MQTT Broker:", lora_data)
+            client.publish(TOPIC, json.dumps(lora_data))
+            print("Publicado a MQTT Broker:", lora_data)
             
             time.sleep(2)
 
     except KeyboardInterrupt:
-        print("\nNo more data sent")
+        print("\nFin de la prueba MQTT")
         client.loop_stop()
         client.disconnect()

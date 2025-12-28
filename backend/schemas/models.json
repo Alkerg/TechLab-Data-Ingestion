@@ -6,6 +6,7 @@
     "id_field": "camCode"
   },
   "lora_wan": {
-    "id_field": "applicationID"
+    "id_field": "applicationID",
+    "mqtt_topic": "lorawan/data"
   }
 }
