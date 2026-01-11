@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechLab IoT - Orion Manager</title>
+  <title>Plataforma TechLab - Panel de Control</title>
   
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div class="container">
-    <h2>Microfrontend TechLab</h2>
+    <h2>Panel del control Plataforma TechLab</h2>
 
     <h3>Crear nueva entidad</h3>
     <div class="form-group">
@@ -21,12 +21,14 @@
       <input type="text" id="newEntityType" placeholder="Ej: cuenta_personas">
 
       <label>Atributos (JSON):</label>
-      <textarea id="newEntityAttrs" rows="6" placeholder='{ "aforo": { "type": "Number", "value": 0 } }'>{
-    "aforo": {
-        "type": "Number",
-        "value": 0
-    }
-}</textarea>
+      <textarea id="newEntityAttrs" rows="6" placeholder='{ "aforo": { "type": "Number", "value": 0 } }'>
+      {
+      "aforo": {
+          "type": "Number",
+          "value": 0
+        }
+      }
+      </textarea>
       <button onclick="createEntity()">Crear Entidad</button>
       <p id="createStatus" class="status-msg"></p>
     </div>

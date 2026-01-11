@@ -72,11 +72,11 @@ services:
     networks:
       - testnet
 
-  microfrontend:
+  frontend:
     build:
-      context: ./microfrontend
+      context: ./frontend
       dockerfile: Dockerfile
-    container_name: microfrontend
+    container_name: frontend
     ports:
       - "3000:3000"
     restart: unless-stopped

@@ -135,7 +135,7 @@ app.delete("/api/entities/:id", async (req, res) => {
   }
 });
 
-//Iniciar el servidor del microfrontend
+//Iniciar el servidor del frontend
 app.listen(3000, () => {
-  console.log("Microfrontend disponible en http://localhost:3000");
+  console.log("Panel de control disponible en http://localhost:3000");
 });
