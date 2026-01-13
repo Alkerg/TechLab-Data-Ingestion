@@ -1,6 +1,6 @@
 .PHONY: build-images upload_images deploy-local
 
-# Contruir las imágenes Docker del proyecto
+## Contruir las imágenes Docker del proyecto
 build-images:
 	bash build-images.sh
 
