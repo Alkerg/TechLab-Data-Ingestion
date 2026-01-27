@@ -101,8 +101,9 @@ if __name__ == "__main__":
     client = mqtt.Client()
     client.on_message = on_message
 
-    client.tls_set()
-    client.tls_insecure_set(True)        
+    # Configuración TLS para despliegue
+    #client.tls_set()
+    #client.tls_insecure_set(True)        
 
     client.connect(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
 
