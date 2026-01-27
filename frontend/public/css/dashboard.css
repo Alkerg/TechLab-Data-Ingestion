@@ -8,13 +8,13 @@ body {
   background-color: #f5f7fa;
   color: #333;
   margin: 0;
-  padding: 20px;
+  padding: 0;
 }
 
 /* Contenedor principal para centrar el contenido */
 .container {
   max-width: 900px;
-  margin: 0 auto;
+  margin: 20px auto;
   background-color: #ffffff;
   padding: 30px;
   border-radius: 8px;

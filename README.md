@@ -8,6 +8,8 @@ El proyecto está compuesto por los siguientes servicios:
 
 ### Backend Services
 
+Los servicios de backend utilizan las tenologías **Mosquitto** y **FastAPI** para la recepción y procesamiento de datos mediante los protocolos MQTT y HTTP. A continuación se detallan los servicios que componen el backend principal del módulo. 
+
 #### 1. **Data Broker** (`data-broker`)
 - **Puerto**: 8000
 - **Función**: API REST para ingesta de datos HTTP
@@ -37,11 +39,14 @@ El proyecto está compuesto por los siguientes servicios:
 
 ### Frontend
 
-#### **Microfrontend** (`microfrontend`)
+El frontend esta desarrollado principalmente con **NodeJS** y **Express** para el enrutamiento y configuración del servidor. Para los estilos y diseño de las páginas se usó **HTML** y **CSS**.
+
+#### **Frontend** (`frontend`)
 - **Puerto**: 3000
 - Interfaz web para gestionar entidades NGSI
-- Permite crear, consultar, actualizar y eliminar entidades
-- Interactúa directamente con Orion Context Broker
+- Implementa un sistema de **autenticación** con página de registro e inicio de sesión usando session cookies
+- Permite **crear**, **consultar**, **actualizar** y **eliminar** entidades
+- Interactúa directamente con **Orion Context Broker**
 
 ### FIWARE Components
 
@@ -90,7 +95,7 @@ bash upload_images.sh
 ### Prerequisitos
 - Docker
 - Docker Compose
-- Crear un archivo de variables de entorno ```.env``` tanto en ```/backend``` como en ```/microfrontend```, solo debes copiar el contenido de ```.env.example``` sin ningún cambio a menos que desees otra configuración de puertos dentro del contenedor
+- Crear un archivo de variables de entorno ```.env``` tanto en ```/backend``` como en ```/frontend```, solo debes copiar el contenido de ```.env.example``` sin ningún cambio a menos que desees otra configuración de puertos dentro del contenedor
 
 ### Iniciar todos los servicios
 ```bash
@@ -123,6 +128,21 @@ docker-compose logs -f data-broker
 ### Detener servicios
 ```bash
 docker-compose down
+```
+
+## Cómo levantar el frontend
+
+Accede al directorio ```/frontend``` en la terminal y ejecuta lo siguiente
+
+```bash
+# Instalar las dependencias
+npm install
+
+# Iniciar el servidor
+node app.js
+# o con npm
+npm run dev
+
 ```
 
 ## Cómo crear una entidad
@@ -303,4 +323,21 @@ cd backend/tests/
 python3 send_http_data.py
 
 python3 send_mqtt_data.py
+```
+
+## Uso del Makefile
+
+Make permite la automatización de scripts para agilizar el desarrollo, si tienes instalado [Make](https://www.geeksforgeeks.org/installation-guide/how-to-install-make-on-ubuntu/) puedes usar los targets disponibles en el **Makefile**.
+
+### Comandos Disponibles
+```bash
+## Construye las imágenes Docker del proyecto ejecutando el script build-images.sh
+make build-images
+
+## Sube las imágenes Docker construidas a Docker Hub ejecutando el script upload_images.sh
+make upload_images
+
+## Despliega la aplicación completa localmente usando Docker Compose. 
+## Utiliza el archivo docker-compose-local.yml y reconstruye las imágenes si es necesario con la opción --build
+make deploy-local
 ```

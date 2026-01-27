@@ -8,8 +8,9 @@ docker build -t techlab-mocknotify:latest -f backend/Dockerfile.mocknotify backe
 
 docker build -t techlab-mqttbroker:latest -f backend/Dockerfile.mqttbroker backend/
 
-# Construir imagen del microfrontend
-docker build -t techlab-microfrontend:latest -f microfrontend/Dockerfile microfrontend/
+# Construir imagen del frontend
+docker build -t techlab-controlpanel:latest -f frontend/Dockerfile frontend/
 
+echo "-------------------------------------------------"
 echo "Imágenes docker construidas con éxito"
 

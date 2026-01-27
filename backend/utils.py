@@ -13,7 +13,6 @@ def load_schemas(schema_dir: str = "./schemas") -> dict:
         return models
 
     for filename in os.listdir(schema_dir):
-        # Ignoramos models.json si todavía existe para evitar duplicados o errores
         if filename.endswith(".json") and filename != "models.json":
             entity_type = filename.replace(".json", "")
             filepath = os.path.join(schema_dir, filename)
@@ -31,7 +30,6 @@ def load_schemas(schema_dir: str = "./schemas") -> dict:
     return models
 
 def json_to_ngsi_entity(payload: dict, entity_type: str, id_field: str) -> dict:
-    # (El resto de la función se mantiene igual que en tu archivo original)
     data_id = payload.get(id_field)
     
     if data_id is None:
