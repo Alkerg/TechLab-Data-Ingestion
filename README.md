@@ -102,10 +102,10 @@ bash upload_images.sh
 # Forma estándar desacoplada (sin imprimir los logs en la consola)
 docker-compose up -d
 # o
-docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose-local.yml up -d
 
 # Si deseas reconstruir todo el proyecto y servicios desde cero
-docker-compose -f docker-compose.yml up --build --force-recreate --no-deps
+docker-compose -f docker-compose-local.yml up --build --force-recreate --no-deps
 ```
 Deberias ver algo como esto si usas Docker Desktop
 
@@ -122,7 +122,7 @@ docker-compose ps
 docker-compose logs -f
 
 # Servicio específico
-docker-compose logs -f data-broker
+docker logs -f data-broker
 ```
 
 ### Detener servicios
