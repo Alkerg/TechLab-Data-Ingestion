@@ -235,7 +235,7 @@ app.get("/logout", (req, res) => {
 initDb()
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Panel de control disponible en http://localhost:${PORT}`);
+      console.log(`Panel de control disponible en el puerto ${PORT}`);
     });
   })
   .catch((e) => {
