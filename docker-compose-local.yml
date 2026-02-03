@@ -23,6 +23,8 @@ services:
     container_name: mqtt-broker
     ports:
       - "1883:1883"
+    volumes:
+      - ./backend/schemas:/app/schemas
     command: >
       sh -c "echo 'listener 1883' > /mosquitto/config/mosquitto.conf &&
              echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf &&
@@ -38,6 +40,8 @@ services:
     container_name: data-broker
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend/schemas:/app/schemas
     depends_on:
       - mqtt-broker
       - orion

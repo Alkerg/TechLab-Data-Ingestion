@@ -25,6 +25,7 @@ services:
       - "1883:1883"
     volumes:
       - ./mqtt_config:/mosquitto/config
+      - ./backend/schemas:/app/schemas
       - /opt/mosquitto-certs/fullchain.pem:/mosquitto/certs/fullchain.pem:ro
       - /opt/mosquitto-certs/privkey.pem:/mosquitto/certs/privkey.pem:ro
     restart: unless-stopped
@@ -36,6 +37,8 @@ services:
     container_name: data-broker
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend/schemas:/app/schemas
     depends_on:
       - mqtt-broker
       - orion

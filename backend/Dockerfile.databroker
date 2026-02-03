@@ -8,8 +8,7 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./schemas /app/schemas
-
+#COPY ./schemas /app/schemas
 COPY data_broker.py .
 COPY utils.py .
 COPY .env .

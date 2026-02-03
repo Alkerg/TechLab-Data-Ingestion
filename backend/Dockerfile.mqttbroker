@@ -8,7 +8,7 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY schemas ./schemas
+#COPY schemas ./schemas
 COPY mqtt_broker_processor.py .
 COPY utils.py .
 COPY .env .
