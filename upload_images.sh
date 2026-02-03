@@ -9,7 +9,7 @@ IMAGES=(
     "techlab-databroker"
     "techlab-mocknotify"
     "techlab-mqttbroker"
-    "techlab-microfrontend"
+    "techlab-controlpanel"
 )
 
 for IMAGE in "${IMAGES[@]}"; do

@@ -64,17 +64,43 @@ services:
     networks:
       - testnet
       
-  microfrontend:
-    image: alk3rg/techlab-microfrontend:latest
-    container_name: microfrontend
+  frontend:
+    image: alk3rg/techlab-controlpanel:latest
+    container_name: frontend
     ports:
-      - "3000:3000"
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - SESSION_SECRET=secret
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=techlab
+      - DB_PASSWORD=techlabpw
+      - DB_NAME=techlab
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - testnet
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=techlab
+      - POSTGRES_USER=techlab
+      - POSTGRES_PASSWORD=techlabpw
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - testnet
 
 volumes:
   mongo_data:
+  pg_data:
 
 networks:
   testnet:

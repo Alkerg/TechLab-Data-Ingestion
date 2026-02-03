@@ -6,8 +6,13 @@ import paho.mqtt.client as mqtt
 import base64
 from datetime import datetime, timezone
 
-MQTT_HOST = "localhost"
+"""
 MQTT_HOST = "oti-test.jorgeparishuana.dev"
+MQTT_PORT = 1883
+
+TOPIC = "cuenta_personas/data" """
+
+MQTT_HOST = "localhost"
 MQTT_PORT = 1883
 TOPIC = "lorawan/data"
 
@@ -50,7 +55,7 @@ def random_lora_mqtt_data():
         "adr": True,
         "applicationID": str(random.randint(1, 2)),
         "applicationName": "mqtt", 
-        "data": "SGVsbG8gUkFLV2lyZWxlc3M=", 
+        "data": str(base64.b64encode(b'{"temperature":' + str(random.randint(20, 30)).encode() + b',"humidity":60}'), 'utf-8'),
         "data_encode": "base64", 
         "devEUI": "ae10fccc25ae10fc", 
         "deviceName": "mqtt_test",
@@ -79,7 +84,7 @@ def random_lora_mqtt_data():
 
 if __name__ == "__main__":
     client = mqtt.Client()
-    client.tls_set()
+    #client.tls_set()
     client.connect(MQTT_HOST, MQTT_PORT)
     client.loop_start()
 
@@ -90,18 +95,18 @@ if __name__ == "__main__":
             lora_data = random_lora_mqtt_data()
 
             #client.publish(TOPIC, json.dumps(smart_parking_data))
-            #print("Published to MQTT Broker:", smart_parking_data)
+            #print("Publicado a MQTT Broker:", smart_parking_data)
 
             wrapped = encode_base64_payload(cuenta_personas_data) 
-            #Eclient.publish(TOPIC, json.dumps(wrapped))
-            #print("Published to MQTT Broker:", cuenta_personas_data)
+            #client.publish(TOPIC, json.dumps(wrapped))
+            #print("Publicado a MQTT Broker:", cuenta_personas_data)
 
             client.publish(TOPIC, json.dumps(lora_data))
-            print("Published to MQTT Broker:", lora_data)
+            print("Publicado a MQTT Broker:", lora_data)
             
             time.sleep(2)
 
     except KeyboardInterrupt:
-        print("\nNo more data sent")
+        print("\nFin de la prueba MQTT")
         client.loop_stop()
         client.disconnect()

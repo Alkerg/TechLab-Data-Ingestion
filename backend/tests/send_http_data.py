@@ -66,13 +66,12 @@ if __name__ == "__main__":
     try:
         while True:
             smart_parking_data = random_smart_parking_http_data()
-            #requests.post(HTTP_BROKER_URL_SMART_PARKING, json=smart_parking_data)
-            print("\nSmart Parking data sent via HTTP:", smart_parking_data)
-            time.sleep(1)
+            requests.post(HTTP_BROKER_URL_SMART_PARKING, json=smart_parking_data)
+            print("\nEnviando datos de Smart Parking simulados:", smart_parking_data)
+
             cuenta_personas_data = random_cuenta_personas_http_data()
             requests.post(HTTP_BROKER_URL_CUENTA_PERSONAS, json=cuenta_personas_data)
-            print("\nCuenta Personas data sent via HTTP:", cuenta_personas_data)
-
+            print("\nEnviando datos de Cuenta Personas simulados:", cuenta_personas_data)
             time.sleep(2)
     except KeyboardInterrupt:
-        print("\nEnd of HTTP testing")
+        print("\nFin de la prueba HTTP")

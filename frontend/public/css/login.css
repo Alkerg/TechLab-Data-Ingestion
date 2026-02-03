@@ -1,0 +1,57 @@
+.auth-container {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.auth-container h2 {
+  margin: 0 0 18px;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-weight: 600;
+  color: #34495e;
+}
+
+input[type="email"], input[type="password"] {
+  padding: 12px;
+  border: 1px solid #dfe6e9;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+button {
+  margin-top: 8px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #3498db;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover { background: #2980b9; }
+
+.helper-text {
+  margin-top: 12px;
+  text-align: center;
+  color: #7f8c8d;
+}
+
+.helper-text a { color: #3498db; text-decoration: none; }
+
+.error {
+    color: #e74c3c; text-align: center; font-weight: 600;
+}

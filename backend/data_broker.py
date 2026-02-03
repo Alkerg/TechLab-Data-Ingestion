@@ -1,6 +1,5 @@
 import json, requests, uvicorn, os
 from fastapi import FastAPI, HTTPException
-# Eliminamos load_schemas de la importación
 from utils import json_to_ngsi_entity
 from dotenv import load_dotenv
 
@@ -29,17 +28,18 @@ def ingest(entity_type: str, payload: dict):
     global MODELS
 
     if entity_type not in MODELS:
-        print(f"Modelo '{entity_type}' no encontrado en memoria.")
+        print(f"Modelo '{entity_type}' no encontrado en {MODELS_FILE}.")
         MODELS = load_models_config()
         
     if entity_type not in MODELS:
-        available = list(MODELS.keys())
-        raise HTTPException(400, f"Modelo '{entity_type}' no registrado. Disponibles: {available}")
+        available_models = list(MODELS.keys())
+        raise HTTPException(400, f"Modelo '{entity_type}' no registrado. Disponibles: {available_models}")
 
     id_field = MODELS[entity_type]["id_field"]
+    data_fields = MODELS[entity_type]["data_fields"] if "data_fields" in MODELS[entity_type] else []
 
     try:
-        entity = json_to_ngsi_entity(payload, entity_type, id_field)
+        entity = json_to_ngsi_entity(payload, entity_type, id_field, data_fields)
     except ValueError as e:
         raise HTTPException(400, str(e))
 
@@ -66,6 +66,7 @@ def ingest(entity_type: str, payload: dict):
             json=attrs_only,
             headers={"Content-Type": "application/json"}
         )
+
         
         if r_patch.status_code == 204:
              print(entity)
