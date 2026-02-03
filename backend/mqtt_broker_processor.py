@@ -52,6 +52,8 @@ def on_message(client, userdata, msg):
     try:
         raw = json.loads(msg.payload.decode())
         topic = msg.topic
+        print("[topic]:", topic)
+        print("[raw]\n", raw, "\n")
 
         if topic not in TOPIC_MODEL_MAP:
             return

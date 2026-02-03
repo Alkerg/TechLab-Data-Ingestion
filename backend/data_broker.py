@@ -49,6 +49,7 @@ def ingest(entity_type: str, payload: dict):
             json=entity,
             headers={"Content-Type": "application/json"}
         )
+        print(entity)
     except requests.exceptions.RequestException as e:
         raise HTTPException(502, f"Error conectando con Orion: {e}")
 
@@ -67,7 +68,8 @@ def ingest(entity_type: str, payload: dict):
         )
         
         if r_patch.status_code == 204:
-             return {"status": "updated", "entity_id": entity["id"]}
+             print(entity)
+             return {"status": "updated", "entity_id": entity["id"]}             
         else:
              return {"status": "update_failed", "error": r_patch.text}
 

@@ -5,9 +5,9 @@ import random
 from datetime import datetime, timezone
 
 HTTP_BROKER_URL_CUENTA_PERSONAS = "http://localhost:8000/ingest/cuenta_personas"
-HTTP_BROKER_URL_CUENTA_PERSONAS = "https://oti-test.jorgeparishuana.dev:4200/ingest/cuenta_personas"
+#HTTP_BROKER_URL_CUENTA_PERSONAS = "https://oti-test.jorgeparishuana.dev:4200/ingest/cuenta_personas"
 HTTP_BROKER_URL_SMART_PARKING = "http://localhost:8000/ingest/smart_parking"
-HTTP_BROKER_URL_SMART_PARKING = "https://oti-test.jorgeparishuana.dev:4200/ingest/smart_parking"
+#HTTP_BROKER_URL_SMART_PARKING = "https://oti-test.jorgeparishuana.dev:4200/ingest/smart_parking"
 
 def random_smart_parking_http_data():
 
@@ -66,9 +66,9 @@ if __name__ == "__main__":
     try:
         while True:
             smart_parking_data = random_smart_parking_http_data()
-            requests.post(HTTP_BROKER_URL_SMART_PARKING, json=smart_parking_data)
+            #requests.post(HTTP_BROKER_URL_SMART_PARKING, json=smart_parking_data)
             print("\nSmart Parking data sent via HTTP:", smart_parking_data)
-
+            time.sleep(1)
             cuenta_personas_data = random_cuenta_personas_http_data()
             requests.post(HTTP_BROKER_URL_CUENTA_PERSONAS, json=cuenta_personas_data)
             print("\nCuenta Personas data sent via HTTP:", cuenta_personas_data)

@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 MQTT_HOST = "localhost"
 MQTT_HOST = "oti-test.jorgeparishuana.dev"
 MQTT_PORT = 1883
-TOPIC = "cuenta_personas/data"
+TOPIC = "lorawan/data"
 
 def encode_base64_payload(payload_dict):
     json_str = json.dumps(payload_dict)
