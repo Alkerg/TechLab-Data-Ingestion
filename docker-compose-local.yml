@@ -24,11 +24,7 @@ services:
     ports:
       - "1883:1883"
     volumes:
-      - ./backend/schemas:/app/schemas
-    command: >
-      sh -c "echo 'listener 1883' > /mosquitto/config/mosquitto.conf &&
-             echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf &&
-             /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
+      - ./mqtt_config/mosquitto.conf:/mosquitto/config/mosquitto.conf
     restart: unless-stopped
     networks:
       - testnet
@@ -56,6 +52,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile.mqttbroker
     container_name: mqtt-broker-processor
+    volumes:
+      - ./backend/schemas:/app/schemas
     depends_on:
       - mqtt-broker
       - data-broker

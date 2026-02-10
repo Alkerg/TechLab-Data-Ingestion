@@ -25,7 +25,6 @@ services:
       - "1883:1883"
     volumes:
       - ./mqtt_config:/mosquitto/config
-      - ./schemas:/app/schemas
       - /opt/mosquitto-certs/fullchain.pem:/mosquitto/certs/fullchain.pem:ro
       - /opt/mosquitto-certs/privkey.pem:/mosquitto/certs/privkey.pem:ro
     restart: unless-stopped
@@ -49,6 +48,8 @@ services:
   mqtt-broker-processor:
     image: alk3rg/techlab-mqttbroker:latest
     container_name: mqtt-broker-processor
+    volumes:
+      - ./backend/schemas:/app/schemas
     depends_on:
       - mqtt-broker
       - data-broker
