@@ -1,0 +1,12 @@
+{
+  "smart_parking_1": {
+    "entity_type": "smart_parking"
+  },
+  "cuenta_personas_1": {
+    "entity_type": "cuenta_personas"
+  },
+  "lora_wan_1": {
+    "entity_type": "lora_wan",
+    "mqtt_topic": "lora_wan_1/data"
+  }
+}

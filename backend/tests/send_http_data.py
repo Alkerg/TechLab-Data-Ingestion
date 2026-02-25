@@ -1,4 +1,3 @@
-# send_http_test.py
 import time
 import requests
 import random
@@ -8,6 +7,7 @@ HTTP_BROKER_URL_CUENTA_PERSONAS = "http://localhost:8000/ingest/cuenta_personas"
 HTTP_BROKER_URL_CUENTA_PERSONAS = "https://oti-test.jorgeparishuana.dev:4200/ingest/cuenta_personas"
 HTTP_BROKER_URL_SMART_PARKING = "http://localhost:8000/ingest/smart_parking"
 HTTP_BROKER_URL_SMART_PARKING = "https://oti-test.jorgeparishuana.dev:4200/ingest/smart_parking"
+SENDING_RATE = 2
 
 def random_smart_parking_http_data():
 
@@ -68,10 +68,7 @@ if __name__ == "__main__":
             smart_parking_data = random_smart_parking_http_data()
             requests.post(HTTP_BROKER_URL_SMART_PARKING, json=smart_parking_data)
             print("\nEnviando datos de Smart Parking simulados:", smart_parking_data)
-
-            cuenta_personas_data = random_cuenta_personas_http_data()
-            requests.post(HTTP_BROKER_URL_CUENTA_PERSONAS, json=cuenta_personas_data)
-            print("\nEnviando datos de Cuenta Personas simulados:", cuenta_personas_data)
-            time.sleep(2)
+            
+            time.sleep(SENDING_RATE)
     except KeyboardInterrupt:
         print("\nFin de la prueba HTTP")

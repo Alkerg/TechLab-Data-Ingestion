@@ -1,6 +1,18 @@
 import os
 import json
 
+def load_file(file_path):
+    """Carga un archivo JSON y devuelve su contenido como diccionario."""
+    try:
+        with open(file_path, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Error: No se encontró el archivo {file_path}")
+        return {}
+    except json.JSONDecodeError:
+        print(f"Error: {file_path} no es un JSON válido")
+        return {}
+
 def json_to_ngsi_entity(payload: dict, entity_type: str, id_field: str, data_fields: list) -> dict:
     """Convierte un diccionario JSON en una entidad NGSI."""
 

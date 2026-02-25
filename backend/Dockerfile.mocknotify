@@ -7,7 +7,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY mock_notify_receiver.py .
-COPY utils.py .
 COPY .env .
 
 CMD ["python", "mock_notify_receiver.py"]

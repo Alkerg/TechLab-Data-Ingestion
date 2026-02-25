@@ -36,7 +36,7 @@ Los servicios de backend utilizan las tenologías **Mosquitto** y **FastAPI** pa
 - Configuración en `mqtt_config/mosquitto.conf`
 
 ![Arquitectura del modulo de ingestión de datos de TechLab](imgs/Arquitecture.png)
-
+ 
 ### Frontend
 
 El frontend esta desarrollado principalmente con **NodeJS** y **Express** para el enrutamiento y configuración del servidor. Para los estilos y diseño de las páginas se usó **HTML** y **CSS**.

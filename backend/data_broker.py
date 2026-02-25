@@ -1,6 +1,6 @@
 import json, requests, uvicorn, os
 from fastapi import FastAPI, HTTPException
-from utils import json_to_ngsi_entity
+from utils import json_to_ngsi_entity, load_file
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -8,35 +8,27 @@ load_dotenv()
 app = FastAPI(title="Data Broker v2")
 
 ORION_URL = os.getenv("ORION_URL", "http://localhost:1026/v2/entities")
-MODELS_FILE = "./schemas/models.json"
+DEVICES_FILE = "./schemas/devices.json"
+TYPES_FILE = "./schemas/types.json"
 
-def load_models_config():
-    try:
-        with open(MODELS_FILE, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print(f"Error: No se encontró el archivo {MODELS_FILE}")
-        return {}
-    except json.JSONDecodeError:
-        print(f"Error: {MODELS_FILE} no es un JSON válido")
-        return {}
+DEVICES = load_file(DEVICES_FILE)
+TYPES = load_file(TYPES_FILE)
 
-MODELS = load_models_config()
+@app.post("/ingest/{entity_name}")
+def ingest(entity_name: str, payload: dict):
+    global DEVICES, TYPES
 
-@app.post("/ingest/{entity_type}")
-def ingest(entity_type: str, payload: dict):
-    global MODELS
-
-    if entity_type not in MODELS:
-        print(f"Modelo '{entity_type}' no encontrado en {MODELS_FILE}.")
-        MODELS = load_models_config()
+    if entity_name not in DEVICES:
+        print(f"Entidad '{entity_name}' no encontrada en {DEVICES_FILE}.")
+        DEVICES = load_file(DEVICES_FILE)
         
-    if entity_type not in MODELS:
-        available_models = list(MODELS.keys())
-        raise HTTPException(400, f"Modelo '{entity_type}' no registrado. Disponibles: {available_models}")
-
-    id_field = MODELS[entity_type]["id_field"]
-    data_fields = MODELS[entity_type]["data_fields"] if "data_fields" in MODELS[entity_type] else []
+    if entity_name not in DEVICES:
+        available_entities = list(DEVICES.keys())
+        raise HTTPException(400, f"Entidad '{entity_name}' no registrada. Registradas: {available_entities}")
+    
+    entity_type = DEVICES[entity_name]["entity_type"]
+    id_field = TYPES[entity_type]["id_field"]
+    data_fields = TYPES[entity_type]["data_fields"] if "data_fields" in TYPES[entity_type] else []
 
     try:
         entity = json_to_ngsi_entity(payload, entity_type, id_field, data_fields)

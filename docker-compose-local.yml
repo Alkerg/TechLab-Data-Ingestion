@@ -23,8 +23,12 @@ services:
     container_name: mqtt-broker
     ports:
       - "1883:1883"
+      - "8883:8883"
     volumes:
       - ./mqtt_config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mqtt_config/passwd:/mosquitto/config/passwd
+      - ./mqtt_config/acl:/mosquitto/config/acl
+      - ./mqtt_config/certs:/mosquitto/config/certs
     restart: unless-stopped
     networks:
       - testnet
@@ -49,8 +53,8 @@ services:
     tty: true
     stdin_open: true
     build:
-      context: ./backend
-      dockerfile: Dockerfile.mqttbroker
+      context: .
+      dockerfile: backend/Dockerfile.mqttbroker
     container_name: mqtt-broker-processor
     volumes:
       - ./backend/schemas:/app/schemas
