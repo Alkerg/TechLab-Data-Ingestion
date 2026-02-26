@@ -6,17 +6,18 @@ import paho.mqtt.client as mqtt
 import base64
 from datetime import datetime, timezone
 
-"""
-MQTT_HOST = "oti-test.jorgeparishuana.dev"
-MQTT_PORT = 1883
-TOPIC = "cuenta_personas/data"
-SENDING_RATE = 2
-"""
 
-MQTT_HOST = "localhost"
+MQTT_HOST = "oti-test.jorgeparishuana.dev"
 MQTT_PORT = 8883
 TOPIC = "lora_wan_1/data"
 SENDING_RATE = 2
+
+
+""" MQTT_HOST = "localhost"
+MQTT_PORT = 8883
+TOPIC = "lora_wan_1/data"
+SENDING_RATE = 2 """
+
 USE_TLS = True
 
 def encode_base64_payload(payload_dict):
@@ -113,7 +114,7 @@ if __name__ == "__main__":
     client = mqtt.Client()
 
     if USE_TLS:
-        client.username_pw_set("lora_wan_1", "lora_wan_1")
+        client.username_pw_set("lora_wan_2", "lora_wan_2")
         client.tls_set(cert_reqs=ssl.CERT_NONE)
         client.tls_insecure_set(True) 
 

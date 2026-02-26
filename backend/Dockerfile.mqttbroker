@@ -4,13 +4,12 @@ WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
 
-COPY backend/requirements.txt .
+COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY mqtt_config/certs/ca.crt .
-COPY backend/mqtt_broker_processor.py .
-COPY backend/utils.py .
-COPY backend/.env .
+COPY mqtt_broker_processor.py .
+COPY utils.py .
+COPY .env .
 
 CMD ["python", "mqtt_broker_processor.py"]

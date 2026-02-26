@@ -68,4 +68,5 @@ def ingest(entity_name: str, payload: dict):
         return {"error": r.text, "status_code": r.status_code}
 
 if __name__ == "__main__":
+    print("Iniciando Data Broker...")
     uvicorn.run("data_broker:app", host="0.0.0.0", port=8000)

@@ -33,4 +33,5 @@ async def receiver2(request: Request):
     return {"status": "received"}
 
 if __name__ == "__main__":
+    print("Iniciando Mock Notify Receiver...")
     uvicorn.run("mock_notify_receiver:app", host="0.0.0.0", port=9000)

@@ -22,7 +22,6 @@ services:
     image: eclipse-mosquitto
     container_name: mqtt-broker
     ports:
-      - "1883:1883"
       - "8883:8883"
     volumes:
       - ./mqtt_config:/mosquitto/config
@@ -52,7 +51,7 @@ services:
     image: alk3rg/techlab-mqttbroker:latest
     container_name: mqtt-broker-processor
     volumes:
-      - ./backend/schemas:/app/schemas
+      - ./schemas:/app/schemas
     depends_on:
       - mqtt-broker
       - data-broker

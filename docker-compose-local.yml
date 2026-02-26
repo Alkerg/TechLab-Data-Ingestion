@@ -22,10 +22,9 @@ services:
     image: eclipse-mosquitto
     container_name: mqtt-broker
     ports:
-      - "1883:1883"
       - "8883:8883"
     volumes:
-      - ./mqtt_config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mqtt_config/mosquitto.local.conf:/mosquitto/config/mosquitto.conf
       - ./mqtt_config/passwd:/mosquitto/config/passwd
       - ./mqtt_config/acl:/mosquitto/config/acl
       - ./mqtt_config/certs:/mosquitto/config/certs
@@ -53,8 +52,8 @@ services:
     tty: true
     stdin_open: true
     build:
-      context: .
-      dockerfile: backend/Dockerfile.mqttbroker
+      context: ./backend
+      dockerfile: Dockerfile.mqttbroker
     container_name: mqtt-broker-processor
     volumes:
       - ./backend/schemas:/app/schemas
