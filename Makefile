@@ -2,11 +2,11 @@
 
 ## Contruir las imágenes Docker del proyecto
 build-images:
-	bash build-images.sh
+	bash scripts/build-images.sh
 
 ## Subir las imágenes Docker a Docker Hub
 upload-images:
-	bash upload-images.sh
+	bash scripts/upload-images.sh
 
 ## Desplegar la aplicación localmente usando Docker Compose
 deploy-local:

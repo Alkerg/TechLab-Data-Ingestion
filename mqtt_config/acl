@@ -2,7 +2,16 @@ user lora_wan_1
 topic write lora_wan_1/data
 
 user mqtt_broker_processor
-topic #
+topic readwrite #
 
-user processor 
-topic #
+user processor
+topic readwrite #
+
+user lora_wan_2
+topic write lora_wan_2/data
+
+user lora_wan_3
+topic write lora_wan_3/data
+
+user lora_wan_4
+topic write lora_wan_4/data

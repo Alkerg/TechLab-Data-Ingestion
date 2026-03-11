@@ -1,4 +1,4 @@
-# TechLab - Módulo de ingestión de datos V.2
+# TechLab - Módulo de ingestión de datos V2
 
 Sistema de ingesta de datos IoT basado en microservicios con FIWARE Orion Context Broker y MQTT.
 

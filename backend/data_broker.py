@@ -18,24 +18,28 @@ TYPES = load_file(TYPES_FILE)
 def ingest(entity_name: str, payload: dict):
     global DEVICES, TYPES
 
+    # Cargar archivos para verificar actualizaciones
     if entity_name not in DEVICES:
-        print(f"Entidad '{entity_name}' no encontrada en {DEVICES_FILE}.")
         DEVICES = load_file(DEVICES_FILE)
-        
+    
+    # Comprobar si la entidad existe nuevamente
     if entity_name not in DEVICES:
         available_entities = list(DEVICES.keys())
         raise HTTPException(400, f"Entidad '{entity_name}' no registrada. Registradas: {available_entities}")
     
+    # Extraccion de datos de entidad
     entity_type = DEVICES[entity_name]["entity_type"]
     id_field = TYPES[entity_type]["id_field"]
     data_fields = TYPES[entity_type]["data_fields"] if "data_fields" in TYPES[entity_type] else []
 
     try:
+        # Conversion de payload a entidad NGSI
         entity = json_to_ngsi_entity(payload, entity_type, id_field, data_fields)
     except ValueError as e:
         raise HTTPException(400, str(e))
 
     try:
+        # Envio de entidad NGSI a Orion Context broker
         r = requests.post(
             ORION_URL,
             json=entity,
@@ -46,8 +50,8 @@ def ingest(entity_name: str, payload: dict):
 
     if r.status_code == 201:
         return {"status": "created", "entity_id": entity["id"]}
-
     elif r.status_code == 422:
+        # Si la entidad ya existe, se actualizan los atributos
         attrs_only = entity.copy()
         attrs_only.pop("id", None)
         attrs_only.pop("type", None)
@@ -57,7 +61,6 @@ def ingest(entity_name: str, payload: dict):
             json=attrs_only,
             headers={"Content-Type": "application/json"}
         )
-
         
         if r_patch.status_code == 204:
              return {"status": "updated", "entity_id": entity["id"]}

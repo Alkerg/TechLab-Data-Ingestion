@@ -8,5 +8,17 @@
   "lora_wan_1": {
     "entity_type": "lora_wan",
     "mqtt_topic": "lora_wan_1/data"
+  },
+  "lora_wan_2": {
+    "entity_type": "lora_wan",
+    "mqtt_topic": "lora_wan_2/data"
+  },
+  "lora_wan_3": {
+    "entity_type": "lora_wan",
+    "mqtt_topic": "lora_wan_3/data"
+  },
+  "lora_wan_4": {
+    "entity_type": "lora_wan",
+    "mqtt_topic": "lora_wan_4/data"
   }
 }

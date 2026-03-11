@@ -13,7 +13,7 @@ def load_file(file_path):
         print(f"Error: {file_path} no es un JSON válido")
         return {}
 
-def json_to_ngsi_entity(payload: dict, entity_type: str, id_field: str, data_fields: list) -> dict:
+def json_to_ngsi_entity(payload: dict, entity_type: str, id_field: str, data_fields: list):
     """Convierte un diccionario JSON en una entidad NGSI."""
 
     data_id = payload.get(id_field)
@@ -22,7 +22,7 @@ def json_to_ngsi_entity(payload: dict, entity_type: str, id_field: str, data_fie
         raise ValueError(f"El campo ID '{id_field}' no está presente en el payload")
 
     entity = {
-        "id": f"{entity_type}:{data_id}",
+        "id": f"{entity_type}_{data_id}",
         "type": entity_type
     }
 

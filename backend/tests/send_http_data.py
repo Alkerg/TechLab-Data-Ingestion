@@ -3,26 +3,15 @@ import requests
 import random
 from datetime import datetime, timezone
 
-HTTP_BROKER_URL_CUENTA_PERSONAS = "http://localhost:8000/ingest/cuenta_personas"
-HTTP_BROKER_URL_CUENTA_PERSONAS = "https://oti-test.jorgeparishuana.dev:4200/ingest/cuenta_personas"
-HTTP_BROKER_URL_SMART_PARKING = "http://localhost:8000/ingest/smart_parking"
-HTTP_BROKER_URL_SMART_PARKING = "https://oti-test.jorgeparishuana.dev:4200/ingest/smart_parking"
+HTTP_BROKER_URL_SMART_PARKING = "http://localhost:8000/ingest/smart_parking_1"
+#HTTP_BROKER_URL_SMART_PARKING = "https://oti-test.jorgeparishuana.dev:4200/ingest/smart_parking_1"
+
 SENDING_RATE = 2
 
 def random_smart_parking_http_data():
 
-    id_number = random.randint(1, 2)
-    state = ""
-    for i in range(6):
-        state += random.choice(["0", "1"])
-
+    id_number = 1
     parking_id = f"A{id_number}"
-
-    """payload = {
-        "parking_id": parking_id,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "state": state
-    } """
 
     payload = {
         "parking_id": parking_id,
@@ -49,26 +38,14 @@ def random_smart_parking_http_data():
 
     return payload
 
-def random_cuenta_personas_http_data():
-
-    id_number = random.randint(1, 2)
-    cam_code = f"A{id_number}"
-    aforo = random.randint(0, 20)
-
-    payload = {
-        "camCode": cam_code,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "aforo": aforo
-    }
-    return payload
-
 if __name__ == "__main__":
     try:
         while True:
             smart_parking_data = random_smart_parking_http_data()
-            requests.post(HTTP_BROKER_URL_SMART_PARKING, json=smart_parking_data)
+            r = requests.post(HTTP_BROKER_URL_SMART_PARKING, json=smart_parking_data)
             print("\nEnviando datos de Smart Parking simulados:", smart_parking_data)
-            
+            print("Response:", r.text)
+
             time.sleep(SENDING_RATE)
     except KeyboardInterrupt:
         print("\nFin de la prueba HTTP")

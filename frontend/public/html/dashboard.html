@@ -1,90 +1,242 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plataforma TechLab - Panel de Control</title>
-  <link rel="stylesheet" href="./css/dashboard.css">
-  <link rel="stylesheet" href="./css/navigator.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
-<body>
-  <nav>Panel de control TechLab</nav>
-  <div class="container">
-    <h2>Panel de control Plataforma TechLab</h2>
 
-    <h3>Crear nueva entidad</h3>
-    <div class="form-group">
-      <label>ID de la entidad:</label>
-      <input type="text" id="newEntityId" placeholder="Ej: cuenta_personas:A35">
-      
-      <label>Tipo de entidad:</label>
-      <input type="text" id="newEntityType" placeholder="Ej: cuenta_personas">
+<body class="bg-light">
 
-      <label>Atributos (JSON):</label>
-      <textarea id="newEntityAttrs" rows="6" placeholder='{ "aforo": { "type": "Number", "value": 0 } }'>
-      {
-      "aforo": {
-          "type": "Number",
-          "value": 0
-        }
-      }
-      </textarea>
-      <button onclick="createEntity()">Crear Entidad</button>
-      <p id="createStatus" class="status-msg"></p>
+  <nav class="navbar navbar-dark bg-dark sticky-top shadow-sm">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">TechLab Panel de Control</span>
+      <a href="/logout" class="btn btn-outline-light btn-sm"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
     </div>
+  </nav>
 
-    <h3>Entidades disponibles</h3>
-    <div class="form-group">
-      <button onclick="getEntities()">Consultar Entidades</button>
-      <pre id="entities">Sin datos cargados...</pre>
-    </div>
+  <div class="container py-4">
 
-    <h3>Crear suscripción</h3>
-    <div class="form-group">
-      <label>ID de la Entidad:</label>
-      <input type="text" id="entityId" placeholder="Ej: cuenta_personas:A35">
-      
-      <label>Tipo de Entidad:</label>
-      <input type="text" id="entityType" placeholder="Ej: cuenta_personas">
-      
-      <label>Atributos a monitorear (separados por coma):</label>
-      <input type="text" id="attrs" placeholder="Ej: aforo,timestamp">
-      
-      <label>Endpoint de notificación:</label>
-      <input type="text" id="endpoint" placeholder="Ej: http://mock-notify-receiver:9000/notify">
-      
-      <button onclick="subscribe()">Crear Suscripción</button>
-      <pre id="result">Esperando respuesta...</pre>
-    </div>
-    
-    <h3>Suscripciones activas</h3>
-    <div class="form-group">
-      <button onclick="getSubscriptions()">Actualizar Lista</button>
-      <div style="overflow-x: auto;">
-        <table border="0">
-          <thead>
-            <tr>
-              <th>Entidad</th>
-              <th>Tipo</th>
-              <th>Endpoint</th>
-            </tr>
-          </thead>
-          <tbody id="subscriptions"></tbody>
-        </table>
+    <!-- ===== ENTIDADES FIWARE ===== -->
+    <h4 class="mb-3 border-bottom pb-2"><i class="bi bi-diagram-3"></i> Gestión de Entidades</h4>
+
+    <!-- Crear entidad -->
+    <div class="card mb-3">
+      <div class="card-header">Crear nueva entidad</div>
+      <div class="card-body">
+        <div class="row g-2 mb-2">
+          <div class="col-md-6">
+            <label for="newEntityId" class="form-label">ID de la entidad</label>
+            <input type="text" class="form-control" id="newEntityId" placeholder="Ej: lora_wan_1">
+          </div>
+          <div class="col-md-6">
+            <label for="newEntityType" class="form-label">Tipo de entidad</label>
+            <input type="text" class="form-control" id="newEntityType" placeholder="Ej: lora_wan">
+          </div>
+        </div>
+        <div class="mb-2">
+          <label for="newEntityAttrs" class="form-label">Atributos (JSON)</label>
+          <textarea class="form-control font-monospace" id="newEntityAttrs" rows="4"
+            placeholder='{ "data": { "type": "StructuredValue", "value": { "temperature": 60, "humidity": 20 } } }'>
+            {
+              "data": {
+                "type": "StructuredValue",
+                "value": {
+                  "temperature": 60,
+                  "humidity": 20
+                },
+                "data_encode": {
+                  "type": "Text",
+                  "value": "base64"
+                }
+              }
+            }
+          </textarea>
+        </div>
+        <button class="btn btn-primary" onclick="createEntity()"><i class="bi bi-plus-circle"></i> Crear
+          Entidad</button>
+        <p id="createStatus" class="mt-2 mb-0"></p>
       </div>
     </div>
 
-    <h3>Eliminación de entidades</h3>
-    <div class="form-group" style="border-left: 4px solid #e74c3c;">
-      <label>Eliminar Entidad por ID:</label>
-      <input type="text" id="deleteEntityId" placeholder="Ej: cuenta_personas:A35">
-      <button onclick="deleteEntity()" class="delete-btn">Eliminar Entidad</button>
-      <p id="deleteStatus" class="status-msg" style="color: #e74c3c;"></p>
+    <!-- Consultar entidades -->
+    <div class="card mb-3">
+      <div class="card-header">Entidades disponibles</div>
+      <div class="card-body">
+        <button class="btn btn-outline-primary mb-2" onclick="getEntities()"><i class="bi bi-arrow-clockwise"></i>
+          Consultar Entidades</button>
+        <pre id="entities" class="bg-dark text-light p-3 rounded"
+          style="max-height:400px;overflow:auto;">Sin datos cargados...</pre>
+      </div>
+    </div>
+
+    <!-- Crear suscripción -->
+    <div class="card mb-3">
+      <div class="card-header">Crear suscripción</div>
+      <div class="card-body">
+        <div class="row g-2 mb-2">
+          <div class="col-md-6">
+            <label for="entityId" class="form-label">ID de la Entidad</label>
+            <input type="text" class="form-control" id="entityId" placeholder="Ej: lora_wan_1">
+          </div>
+          <div class="col-md-6">
+            <label for="entityType" class="form-label">Tipo de Entidad</label>
+            <input type="text" class="form-control" id="entityType" placeholder="Ej: lora_wan">
+          </div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-6">
+            <label for="attrs" class="form-label">Atributos a monitorear (separados por coma)</label>
+            <input type="text" class="form-control" id="attrs" placeholder="Ej: data,data_encode">
+          </div>
+          <div class="col-md-6">
+            <label for="endpoint" class="form-label">Endpoint de notificación</label>
+            <input type="text" class="form-control" id="endpoint"
+              placeholder="Ej: http://mock-notify-receiver:9000/notify">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="subscribe()"><i class="bi bi-bell"></i> Crear Suscripción</button>
+        <pre id="result" class="bg-dark text-light p-3 rounded mt-2"
+          style="max-height:200px;overflow:auto;">Esperando respuesta...</pre>
+      </div>
+    </div>
+
+    <!-- Suscripciones activas -->
+    <div class="card mb-3">
+      <div class="card-header">Suscripciones activas</div>
+      <div class="card-body">
+        <button class="btn btn-outline-primary mb-2" onclick="getSubscriptions()"><i class="bi bi-arrow-clockwise"></i>
+          Actualizar Lista</button>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Entidad</th>
+                <th>Tipo</th>
+                <th>Endpoint</th>
+              </tr>
+            </thead>
+            <tbody id="subscriptions"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Eliminar entidad -->
+    <div class="card mb-3 border-danger">
+      <div class="card-header bg-danger text-white">Eliminación de entidades</div>
+      <div class="card-body">
+        <label for="deleteEntityId" class="form-label">Eliminar Entidad por ID</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="deleteEntityId" placeholder="Ej: lora_wan_1">
+          <button class="btn btn-danger" onclick="deleteEntity()"><i class="bi bi-trash"></i> Eliminar</button>
+        </div>
+        <p id="deleteStatus" class="mt-2 mb-0"></p>
+      </div>
+    </div>
+
+    <hr class="my-4">
+
+    <!-- ===== CONFIGURACIÓN MQTT ===== -->
+    <h4 class="mb-3 border-bottom pb-2"><i class="bi bi-broadcast-pin"></i> Configuración MQTT Broker</h4>
+
+    <!-- Registrar dispositivo -->
+    <div class="card mb-3">
+      <div class="card-header">Registrar dispositivo MQTT</div>
+      <div class="card-body">
+        <div class="row g-2 mb-2">
+          <div class="col-md-6">
+            <label for="mqttUsername" class="form-label">Nombre de usuario (dispositivo)</label>
+            <input type="text" class="form-control" id="mqttUsername" placeholder="Ej: lora_wan_1">
+          </div>
+          <div class="col-md-6">
+            <label for="mqttPassword" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="mqttPassword" placeholder="Contraseña del dispositivo">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="addMqttUser()"><i class="bi bi-plus-circle"></i> Registrar
+          Dispositivo</button>
+        <p id="mqttUserStatus" class="mt-2 mb-0"></p>
+      </div>
+    </div>
+
+    <!-- Dispositivos registrados -->
+    <div class="card mb-3">
+      <div class="card-header">Dispositivos MQTT registrados</div>
+      <div class="card-body">
+        <button class="btn btn-outline-primary mb-2" onclick="getMqttUsers()"><i class="bi bi-arrow-clockwise"></i>
+          Consultar Dispositivos</button>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Usuario</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="mqttUsers"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agregar regla ACL -->
+    <div class="card mb-3">
+      <div class="card-header">Agregar regla ACL</div>
+      <div class="card-body">
+        <div class="row g-2 mb-2">
+          <div class="col-md-4">
+            <label for="aclUsername" class="form-label">Usuario</label>
+            <input type="text" class="form-control" id="aclUsername" placeholder="Ej: lora_wan_1">
+          </div>
+          <div class="col-md-4">
+            <label for="aclPermission" class="form-label">Permiso</label>
+            <select class="form-select" id="aclPermission">
+              <option value="write">Write (solo escritura)</option>
+              <option value="read">Read (solo lectura)</option>
+              <option value="readwrite">Readwrite (lectura y escritura)</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="aclTopic" class="form-label">Topic</label>
+            <input type="text" class="form-control" id="aclTopic" placeholder="Ej: lora_wan_1/data">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="addAclRule()"><i class="bi bi-shield-plus"></i> Agregar Regla</button>
+        <p id="aclStatus" class="mt-2 mb-0"></p>
+      </div>
+    </div>
+
+    <!-- Reglas ACL activas -->
+    <div class="card mb-4">
+      <div class="card-header">Reglas ACL activas</div>
+      <div class="card-body">
+        <button class="btn btn-outline-primary mb-2" onclick="getAclRules()"><i class="bi bi-arrow-clockwise"></i>
+          Consultar Reglas ACL</button>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Usuario</th>
+                <th>Permiso</th>
+                <th>Topic</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="aclRules"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
   </div>
 
-  <script src="../script.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/entities.js"></script>
+  <script src="../js/mqtt.js"></script>
 </body>
+
 </html>

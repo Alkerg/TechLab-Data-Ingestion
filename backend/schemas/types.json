@@ -6,9 +6,5 @@
     "smart_parking": {
         "id_field": "parking_id",
         "data_fields": ["parking_spots"]
-    },
-    "cuenta_personas": {
-        "id_field": "camCode",
-        "data_fields": ["aforo"]
     }
 }
