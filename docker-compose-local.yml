@@ -87,14 +87,6 @@ services:
     volumes:
       - ./mqtt_config:/app/mqtt_config
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - PORT=3000
-      - SESSION_SECRET=secret
-      - DB_HOST=users-postgres-db
-      - DB_PORT=5432
-      - DB_USER=techlab
-      - DB_PASSWORD=techlabpw
-      - DB_NAME=techlab
     depends_on:
       - users-postgres-db
     restart: unless-stopped
