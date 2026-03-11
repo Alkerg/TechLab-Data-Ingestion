@@ -1,9 +1,6 @@
 user lora_wan_1
 topic write lora_wan_1/data
 
-user mqtt_broker_processor
-topic readwrite #
-
 user processor
 topic readwrite #
 
