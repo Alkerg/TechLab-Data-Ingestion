@@ -35,7 +35,7 @@ Los servicios de backend utilizan las tenologías **Mosquitto** y **FastAPI** pa
 - Broker Eclipse Mosquitto para comunicación MQTT
 - Configuración en `mqtt_config/mosquitto.conf`
 
-![Arquitectura del modulo de ingestión de datos de TechLab](imgs/Arquitecture.png)
+![Arquitectura del modulo de ingestión de datos de TechLab](imgs/ArquitectureV2.png)
  
 ### Frontend
 
@@ -62,6 +62,20 @@ El frontend esta desarrollado principalmente con **NodeJS** y **Express** para e
 Las imágenes de los servicios se encuentran alojadas en el siguiente [enlace](https://hub.docker.com/repositories/alk3rg)
 
 Para levantar los servicios sin construir las imágenes localmente, usa el archivo ```docker-compose-deploy.yml```
+
+### Estructura de archivos del proyecto antes del despliegue
+
+```
+.
+├── docker-compose-deploy.yml
+├── mqtt_config
+│   ├── acl
+│   ├── mosquitto.conf
+│   └── passwd
+└── schemas
+    ├── devices.json
+    └── types.json
+```
 
 ### Inicia todos los servicios
 

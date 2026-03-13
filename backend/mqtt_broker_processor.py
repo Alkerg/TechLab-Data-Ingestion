@@ -153,7 +153,7 @@ if __name__ == "__main__":
 
     if USE_TLS:
         client.username_pw_set("processor", "processor")
-        client.tls_set(cert_reqs=ssl.CERT_NONE)
+        client.tls_set()
         client.tls_insecure_set(True)
               
     try:
