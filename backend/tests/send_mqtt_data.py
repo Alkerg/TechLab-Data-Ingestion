@@ -7,16 +7,16 @@ import base64
 from datetime import datetime, timezone
 
 
-""" MQTT_HOST = "oti-test.jorgeparishuana.dev"
+MQTT_HOST = "oti-test.jorgeparishuana.dev"
 MQTT_PORT = 8883
 TOPIC = "lora_wan_1/data"
-SENDING_RATE = 2 """
+SENDING_RATE = 2
 
 
-MQTT_HOST = "localhost"
+""" MQTT_HOST = "localhost"
 MQTT_PORT = 8883
 TOPIC = "lora_wan_4/data"
-SENDING_RATE = 2
+SENDING_RATE = 2 """
 
 USE_TLS = True
 VERIFY_CERTIFICATE = False
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 
     if USE_TLS:
-        client.username_pw_set("lora_wan_4", "lora_wan_4")
+        #client.username_pw_set("lora_wan_1", "lora_wan_1")
         if VERIFY_CERTIFICATE:
             client.tls_set()
         else:
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     try:
         while True:
 
-            lora_data = random_lora_mqtt_data(4)
+            lora_data = random_lora_mqtt_data(8)
 
             # Envia datos del proyecto LoRaWAN
             client.publish(TOPIC, json.dumps(lora_data))

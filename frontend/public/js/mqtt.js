@@ -3,42 +3,41 @@ async function addMqttUser() {
     const password = document.getElementById("mqttPassword").value;
     const statusElem = document.getElementById("mqttUserStatus");
 
-    if(!username || !password)
-    {
+    if (!username || !password) {
         alert("Usuario y contraseña son obligatorios");
         return;
     }
 
-    try{
+    try {
         const r = await fetch("/api/mqtt/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password })
         });
         const data = await r.json();
-        if(r.ok){
+        if (r.ok) {
             statusElem.className = "text-success fw-bold";
             statusElem.textContent = `Dispositivo registrado: ${data.username}`;
             document.getElementById("mqttUsername").value = "";
             document.getElementById("mqttPassword").value = "";
             getMqttUsers();
-        }else{
+        } else {
             statusElem.className = "text-danger fw-bold";
             statusElem.textContent = `Error: ${data.error}`;
         }
-    }catch(e){
+    } catch (e) {
         alert("Error de conexión");
     }
 }
 
 async function getMqttUsers() {
-    try{
+    try {
         const r = await fetch("/api/mqtt/users");
         const data = await r.json();
         const table = document.getElementById("mqttUsers");
         table.innerHTML = "";
 
-        if(data.length === 0){
+        if (data.length === 0) {
             table.innerHTML = "<tr><td colspan='2' class='text-center text-muted'>No hay dispositivos registrados</td></tr>";
             return;
         }
@@ -57,24 +56,24 @@ async function getMqttUsers() {
             row.appendChild(tdActions);
             table.appendChild(row);
         });
-    }catch(e){
+    } catch (e) {
         alert("Error cargando dispositivos MQTT");
     }
 }
 
 async function deleteMqttUser(username) {
-    if(!confirm(`¿Eliminar el dispositivo "${username}" y sus reglas ACL?`)) return;
+    if (!confirm(`¿Eliminar el dispositivo "${username}" y sus reglas ACL?`)) return;
 
-    try{
+    try {
         const r = await fetch(`/api/mqtt/users/${encodeURIComponent(username)}`, { method: "DELETE" });
         const data = await r.json();
-        if(r.ok){
+        if (r.ok) {
             getMqttUsers();
             getAclRules();
-        }else{
+        } else {
             alert(`Error: ${data.error}`);
         }
-    }catch(e){
+    } catch (e) {
         alert("Error de conexión");
     }
 }
@@ -85,35 +84,35 @@ async function addAclRule() {
     const topic = document.getElementById("aclTopic").value;
     const statusElem = document.getElementById("aclStatus");
 
-    if(!username || !topic){
+    if (!username || !topic) {
         alert("Usuario y topic son obligatorios");
         return;
     }
 
-    try{
+    try {
         const r = await fetch("/api/mqtt/acl", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, permission, topic })
         });
         const data = await r.json();
-        if(r.ok){
+        if (r.ok) {
             statusElem.className = "text-success fw-bold";
             statusElem.textContent = `Regla ACL creada: ${data.username} ${data.permission} ${data.topic}`;
             document.getElementById("aclUsername").value = "";
             document.getElementById("aclTopic").value = "";
             getAclRules();
-        }else{
+        } else {
             statusElem.className = "text-danger fw-bold";
             statusElem.textContent = `Error: ${data.error}`;
         }
-    }catch(e){
+    } catch (e) {
         alert("Error de conexión");
     }
 }
 
 async function getAclRules() {
-    try{
+    try {
         const r = await fetch("/api/mqtt/acl");
         const data = await r.json();
         const table = document.getElementById("aclRules");
@@ -144,27 +143,27 @@ async function getAclRules() {
             row.appendChild(tdActions);
             table.appendChild(row);
         });
-    }catch(e){
+    } catch (e) {
         alert("Error cargando reglas ACL");
     }
 }
 
 async function deleteAclRule(user, permission, topic) {
-    if(!confirm(`¿Eliminar regla: ${user} ${permission} ${topic}?`)) return;
+    if (!confirm(`¿Eliminar regla: ${user} ${permission} ${topic}?`)) return;
 
-    try{
+    try {
         const r = await fetch("/api/mqtt/acl", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: user, permission, topic })
         });
         const data = await r.json();
-        if(r.ok){
+        if (r.ok) {
             getAclRules();
-        }else{
+        } else {
             alert(`Error: ${data.error}`);
         }
-    }catch(e){
+    } catch (e) {
         alert("Error de conexión");
     }
 }

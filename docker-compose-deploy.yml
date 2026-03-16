@@ -74,7 +74,7 @@ services:
     image: alk3rg/techlab-controlpanel:latest
     container_name: frontend
     ports:
-      - "3001:3001"
+      - "3000:3000"
     volumes:
       - ./mqtt_config:/app/mqtt_config
       - /var/run/docker.sock:/var/run/docker.sock

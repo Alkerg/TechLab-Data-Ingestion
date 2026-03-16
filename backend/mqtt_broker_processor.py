@@ -43,6 +43,10 @@ def subscribe_to_topics(client):
         client.subscribe(topic)
         print(f"Suscrito a: {topic}")
 
+def on_connect(client, userdata, flags, rc, properties=None):
+    print(f"Conectado al broker MQTT (rc={rc})")
+    subscribe_to_topics(client)
+
 def reload_and_subscribe(client):
     global TOPIC_MODEL_MAP, TOPICS_LIST
 
@@ -149,6 +153,7 @@ if __name__ == "__main__":
     print("Iniciando MQTT Broker Processor...")
     load_topics_and_types()
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+    client.on_connect = on_connect
     client.on_message = on_message
 
     if USE_TLS:
@@ -158,7 +163,6 @@ if __name__ == "__main__":
               
     try:
         client.connect(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
-        subscribe_to_topics(client)
     except Exception as e:
         print(f"Error conectando al broker MQTT: {e}")
         exit(1)
